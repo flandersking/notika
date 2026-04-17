@@ -1,0 +1,19 @@
+* text=auto eol=lf
+*.swift text eol=lf
+*.md text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.plist text eol=lf
+*.entitlements text eol=lf
+*.xcconfig text eol=lf
+*.json text eol=lf
+*.sh text eol=lf
+
+# Binary formats
+*.bin binary
+*.gguf binary
+*.ggml binary
+*.xcassets binary
+*.png binary
+*.jpg binary
+*.icns binary
