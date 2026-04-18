@@ -21,13 +21,14 @@ struct PillView: View {
         .padding(.vertical, 10)
         .background(
             Capsule()
-                .fill(.black.opacity(0.92))
+                .fill(backgroundFill)
                 .shadow(color: .black.opacity(0.35), radius: 14, y: 6)
         )
         .overlay(
             Capsule()
                 .stroke(.white.opacity(0.1), lineWidth: 1)
         )
+        .animation(.easeInOut(duration: 0.2), value: isErrorState)
         .opacity(model.isVisible ? 1 : 0)
         .scaleEffect(model.isVisible ? 1 : 0.92)
         .animation(.spring(response: 0.24, dampingFraction: 0.82), value: model.isVisible)
@@ -54,7 +55,7 @@ struct PillView: View {
                 .tint(.white)
         case .error:
             Image(systemName: "exclamationmark.circle.fill")
-                .foregroundStyle(.red)
+                .foregroundStyle(.white)
         case .idle:
             Color.clear
         }
@@ -65,9 +66,23 @@ struct PillView: View {
         case .recording: return .white
         case .transcribing, .processing: return Color.white.opacity(0.5)
         case .inserting: return .green
-        case .error: return .red
+        case .error: return .white
         case .idle: return .white
         }
+    }
+
+    /// Hintergrundfarbe der Pill — im Error-Fall orange, sonst Default-Schwarz.
+    private var backgroundFill: Color {
+        switch model.state {
+        case .error: return .orange.opacity(0.95)
+        case .recording, .transcribing, .processing, .inserting, .idle:
+            return .black.opacity(0.92)
+        }
+    }
+
+    private var isErrorState: Bool {
+        if case .error = model.state { return true }
+        return false
     }
 
     private var label: String {
