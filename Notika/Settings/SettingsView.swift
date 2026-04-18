@@ -17,6 +17,9 @@ struct SettingsView: View {
             Tab("Engines", systemImage: "cpu") {
                 EnginesTab()
             }
+            Tab("Spracherkennung", systemImage: "waveform.badge.mic") {
+                TranscriptionTab()
+            }
             Tab("Wörterbuch", systemImage: "character.book.closed") {
                 DictionaryTab()
             }

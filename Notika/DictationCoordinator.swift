@@ -4,6 +4,7 @@ import NotikaCore
 import NotikaMacOS
 import NotikaPostProcessing
 import NotikaTranscription
+import NotikaWhisper
 import os
 
 /// Orchestriert den Diktat-Flow. Phase 1a Schritt 4:
@@ -15,11 +16,12 @@ final class DictationCoordinator {
     private let hotkeyManager = HotkeyManager()
     private let recorder = AudioRecorder()
     private let overlay = OverlayController.shared
-    private let transcriptionEngine: TranscriptionEngine
+    private var transcriptionEngine: TranscriptionEngine
     private let settings = SettingsStore()
     private let textInserter = TextInserter()
     private let costStore = CostStore()
     private let historyStore = HistoryStore()
+    private let whisperModelStore = WhisperModelStore()
 
     private var hotkeyTask: Task<Void, Never>?
     private var levelsTask: Task<Void, Never>?
@@ -38,6 +40,21 @@ final class DictationCoordinator {
     private func makePostProcessingEngine(for mode: DictationMode) -> PostProcessingEngine? {
         let choice = settings.effectiveChoice(for: mode)
         return PostProcessingEngineFactory.makeEngine(for: choice)
+    }
+
+    /// Wählt die TranscriptionEngine für das nächste Diktat basierend auf den Settings.
+    /// Bei `.whisper(modelID)` mit fehlendem Modell: Fallback auf Apple + Pill-Hinweis.
+    private func resolveTranscriptionEngine() -> TranscriptionEngine {
+        switch settings.sttEngineChoice {
+        case .apple:
+            return TranscriptionEngineFactory.makeEngine(.appleSpeechAnalyzer)
+        case .whisper(let modelID):
+            if whisperModelStore.installedModels().contains(modelID) {
+                return WhisperKitEngine(modelID: modelID, modelStore: whisperModelStore)
+            }
+            logger.warning("Whisper-Modell \(modelID.rawValue, privacy: .public) nicht installiert — Fallback auf Apple")
+            return TranscriptionEngineFactory.makeEngine(.appleSpeechAnalyzer)
+        }
     }
 
     func start() {
@@ -139,11 +156,26 @@ final class DictationCoordinator {
             self.overlay.updateState(.transcribing(mode: mode))
 
             do {
-                let transcript = try await self.transcriptionEngine.transcribe(
-                    audio: .file(audioURL),
-                    language: .german,
-                    hints: []
-                )
+                let engine = self.resolveTranscriptionEngine()
+                let transcript: Transcript
+                do {
+                    transcript = try await engine.transcribe(
+                        audio: .file(audioURL),
+                        language: .german,
+                        hints: []
+                    )
+                } catch let err as WhisperError {
+                    self.logger.warning("Whisper-Fehler: \(String(describing: err), privacy: .public) — Fallback auf Apple")
+                    self.overlay.updateState(.error(message: err.userFacingMessage))
+                    try? await Task.sleep(for: .seconds(2))
+                    self.overlay.updateState(.transcribing(mode: mode))
+                    let appleEngine = TranscriptionEngineFactory.makeEngine(.appleSpeechAnalyzer)
+                    transcript = try await appleEngine.transcribe(
+                        audio: .file(audioURL),
+                        language: .german,
+                        hints: []
+                    )
+                }
 
                 if transcript.text.isEmpty {
                     self.logger.warning("Leeres Transkript für \(audioURL.path, privacy: .public)")
