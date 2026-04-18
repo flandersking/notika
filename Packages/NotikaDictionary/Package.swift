@@ -4,8 +4,7 @@ import PackageDescription
 let package = Package(
     name: "NotikaDictionary",
     platforms: [
-        .macOS("26.0"),
-        .iOS("26.0")
+        .macOS("26.0")
     ],
     products: [
         .library(name: "NotikaDictionary", targets: ["NotikaDictionary"])
