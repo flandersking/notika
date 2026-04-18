@@ -1,8 +1,6 @@
 // swift-tools-version: 6.0
 import PackageDescription
 
-// NotikaWhisper wird in Phase 1b mit whisper.cpp befüllt.
-// Aktuell nur Stub, damit das Workspace aufgelöst werden kann.
 let package = Package(
     name: "NotikaWhisper",
     platforms: [
@@ -12,12 +10,20 @@ let package = Package(
         .library(name: "NotikaWhisper", targets: ["NotikaWhisper"])
     ],
     dependencies: [
-        .package(path: "../NotikaCore")
+        .package(path: "../NotikaCore"),
+        .package(url: "https://github.com/argmaxinc/WhisperKit.git", from: "0.9.0")
     ],
     targets: [
         .target(
             name: "NotikaWhisper",
-            dependencies: ["NotikaCore"]
+            dependencies: [
+                "NotikaCore",
+                .product(name: "WhisperKit", package: "WhisperKit")
+            ]
+        ),
+        .testTarget(
+            name: "NotikaWhisperTests",
+            dependencies: ["NotikaWhisper"]
         )
     ]
 )
