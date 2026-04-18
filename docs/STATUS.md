@@ -1,6 +1,21 @@
 # Notika — Status
 
-> Letzte Aktualisierung: **2026-04-17 22:23** (Ende Tag 1)
+> Letzte Aktualisierung: **2026-04-18** (Phase 1b-1 abgeschlossen)
+
+## Phase 1b-1 abgeschlossen (2026-04-18)
+
+- 4 LLM-Provider als BYOK: Anthropic, OpenAI, Google, Ollama
+- Hybrid-Wahl (global + Pro-Modus-Override) funktional
+- Cost-Indikator im Menübar (Tag/Monat)
+- API-Keys in Keychain
+- 1× Retry → Rohtext-Fallback bei API-Fehler
+- Migration vom Phase-1a-Default sauber
+- Onboarding-Step + First-Use-Hint
+- Pill-Fehler-State (orange) für KI-Helfer-Offline
+- 43 Unit-Tests (14 NotikaCore + 29 NotikaPostProcessing) grün
+- Build SUCCEEDED, signiert mit Team P7QK554EET
+
+Nächste Sub-Phase: 1b-2 (whisper.cpp lokale STT)
 
 ## Was bisher funktioniert
 
