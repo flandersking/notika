@@ -32,6 +32,8 @@ packages:
     path: Packages/NotikaDictionary
   NotikaMacOS:
     path: Packages/NotikaMacOS
+  NotikaWhisper:
+    path: Packages/NotikaWhisper
 
 targets:
   Notika:
@@ -72,6 +74,8 @@ targets:
         product: NotikaDictionary
       - package: NotikaMacOS
         product: NotikaMacOS
+      - package: NotikaWhisper
+        product: NotikaWhisper
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.notika.mac
