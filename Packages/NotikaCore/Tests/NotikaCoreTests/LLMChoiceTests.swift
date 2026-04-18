@@ -24,9 +24,6 @@ final class LLMChoiceTests: XCTestCase {
     }
 
     func test_displayName_anthropicHaiku() {
-        // Spec-Inkonsistenz: Test-Erwartung im Spec war "Claude Haiku 4.5 (schnell, günstig)",
-        // aber LLMChoice.displayName setzt laut Spec ein "Claude · "-Präfix davor.
-        // Implementierung folgt der LLMChoice-Spec; Test-Erwartung wurde entsprechend angepasst.
-        XCTAssertEqual(LLMChoice.anthropic(.haiku45).displayName, "Claude · Claude Haiku 4.5 (schnell, günstig)")
+        XCTAssertEqual(LLMChoice.anthropic(.haiku45).displayName, "Claude Haiku 4.5 (schnell, günstig)")
     }
 }

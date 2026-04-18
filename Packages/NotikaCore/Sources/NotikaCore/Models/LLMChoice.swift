@@ -12,9 +12,9 @@ public enum LLMChoice: Codable, Sendable, Hashable {
         switch self {
         case .none:                   return "Kein KI-Helfer — Text bleibt wie gesprochen"
         case .appleFoundationModels:  return "Apple (gratis, läuft auf deinem Mac)"
-        case .anthropic(let m):       return "Claude · \(m.displayName)"
-        case .openAI(let m):          return "ChatGPT · \(m.displayName)"
-        case .google(let m):          return "Gemini · \(m.displayName)"
+        case .anthropic(let m):       return m.displayName
+        case .openAI(let m):          return m.displayName
+        case .google(let m):          return m.displayName
         case .ollama(let id):         return "Ollama · \(id)"
         }
     }
