@@ -1,62 +1,125 @@
 import SwiftUI
 import NotikaCore
+import NotikaPostProcessing
+
+/// Provider-Kategorie für den Top-Picker. Mappt auf konkrete LLMChoice-cases.
+enum ProviderKind: String, CaseIterable, Identifiable {
+    case none, apple, anthropic, openAI, google, ollama
+    var id: String { rawValue }
+
+    var displayName: String {
+        switch self {
+        case .none:      return "Kein KI-Helfer — Text bleibt wie gesprochen"
+        case .apple:     return "Apple (gratis, läuft auf deinem Mac)"
+        case .anthropic: return "Claude (von Anthropic, kostenpflichtig)"
+        case .openAI:    return "ChatGPT (von OpenAI, kostenpflichtig)"
+        case .google:    return "Gemini (von Google, kostenpflichtig)"
+        case .ollama:    return "Lokales Modell via Ollama"
+        }
+    }
+}
+
+extension LLMChoice {
+    var kind: ProviderKind {
+        switch self {
+        case .none:                  return .none
+        case .appleFoundationModels: return .apple
+        case .anthropic:             return .anthropic
+        case .openAI:                return .openAI
+        case .google:                return .google
+        case .ollama:                return .ollama
+        }
+    }
+}
 
 struct EnginesTab: View {
     @State private var settings = SettingsStore()
-
-    /// Vorerst nur die in Phase 1b-1 Task 1 funktional verfügbaren Choices.
-    /// Die volle Picker-UI mit allen Providern + Modellen folgt in späterem Task.
-    private let availableChoices: [LLMChoice] = [
-        .none,
-        .appleFoundationModels
-    ]
+    @State private var globalKind: ProviderKind = .apple
+    @State private var anthropicModel: AnthropicModel = .haiku45
+    @State private var openAIModel: OpenAIModel = .mini54
+    @State private var googleModel: GoogleModel = .flash25
+    @State private var ollamaModel: String = ""
+    @State private var showAdvanced = false
 
     var body: some View {
         Form {
             Section {
-                Picker("Nachbearbeitung", selection: Binding(
-                    get: { settings.globalLLMChoice },
-                    set: { settings.globalLLMChoice = $0 }
-                )) {
-                    ForEach(availableChoices, id: \.self) { choice in
-                        Text(choice.displayName)
-                            .tag(choice)
+                Picker("Wer poliert deinen Text? (LLM)", selection: $globalKind) {
+                    ForEach(ProviderKind.allCases) { Text($0.displayName).tag($0) }
+                }
+                .onChange(of: globalKind) { _, _ in writeGlobal() }
+
+                Group {
+                    switch globalKind {
+                    case .anthropic: AnthropicProviderRow(model: $anthropicModel) { writeGlobal() }
+                    case .openAI:    OpenAIProviderRow(model: $openAIModel) { writeGlobal() }
+                    case .google:    GoogleProviderRow(model: $googleModel) { writeGlobal() }
+                    case .ollama:    OllamaSection(modelID: $ollamaModel) { writeGlobal() }
+                    case .apple, .none: EmptyView()
                     }
                 }
-                .pickerStyle(.radioGroup)
             } header: {
-                Text("LLM für die drei Modi")
-            } footer: {
-                footer
+                Text("Standard für alle Modi")
             }
 
             Section {
-                LabeledContent("Transkription") {
-                    Text("Apple SpeechAnalyzer (on-device, macOS 26)")
-                        .foregroundStyle(.secondary)
+                DisclosureGroup("Erweitert: Pro Modus überschreiben", isExpanded: $showAdvanced) {
+                    ForEach(DictationMode.allCases) { mode in
+                        ModeOverrideRow(mode: mode, settings: settings)
+                    }
                 }
-            } header: {
-                Text("Speech-to-Text")
-            } footer: {
-                Text("In Phase 1b kommt whisper.cpp mit downloadbaren Modellen (Large V3 Turbo, Medium, Small) dazu.")
-                    .font(.footnote)
-                    .foregroundStyle(.secondary)
             }
         }
         .formStyle(.grouped)
+        .task { loadFromSettings() }
     }
 
-    private var footer: some View {
-        VStack(alignment: .leading, spacing: 6) {
-            Text("• **Kein LLM — Rohtranskript:** Der Text geht 1:1 aus dem SpeechAnalyzer in die Zwischenablage. Schnellste Variante.")
-            Text("• **Apple Foundation Models:** On-device, gratis, aber das 3B-Modell ist klein und neigt zu Halluzinationen. Empfohlen nur für einfache Aufgaben.")
-            Text("• **Claude / ChatGPT / Gemini / Ollama (Phase 1b-1):** Provider-Auswahl folgt im neuen Settings-Flow.")
+    private func loadFromSettings() {
+        let choice = settings.globalLLMChoice
+        globalKind = choice.kind
+        switch choice {
+        case .anthropic(let m): anthropicModel = m
+        case .openAI(let m):    openAIModel = m
+        case .google(let m):    googleModel = m
+        case .ollama(let id):   ollamaModel = id
+        default: break
         }
-        .font(.footnote)
-        .foregroundStyle(.secondary)
+    }
+
+    private func writeGlobal() {
+        let new: LLMChoice
+        switch globalKind {
+        case .none:      new = .none
+        case .apple:     new = .appleFoundationModels
+        case .anthropic: new = .anthropic(anthropicModel)
+        case .openAI:    new = .openAI(openAIModel)
+        case .google:    new = .google(googleModel)
+        case .ollama:    new = .ollama(modelID: ollamaModel)
+        }
+        settings.globalLLMChoice = new
     }
 }
 
-#Preview {
-    EnginesTab().frame(width: 620, height: 360)
+private struct ModeOverrideRow: View {
+    let mode: DictationMode
+    @Bindable var settings: SettingsStore
+    @State private var useGlobal: Bool = true
+
+    var body: some View {
+        HStack {
+            Text(mode.displayName)
+            Spacer()
+            // Vereinfachte Override-UI: nur Toggle „nutzt Standard" — vollständige
+            // Sub-Picker pro Modus folgen, wenn User es braucht.
+            Toggle("Standard", isOn: $useGlobal)
+                .onChange(of: useGlobal) { _, on in
+                    if on { settings.setOverride(nil, for: mode) }
+                }
+        }
+        .task {
+            useGlobal = settings.override(for: mode) == nil
+        }
+    }
 }
+
+#Preview { EnginesTab().frame(width: 640, height: 520) }
