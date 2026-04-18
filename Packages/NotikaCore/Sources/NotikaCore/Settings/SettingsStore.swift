@@ -55,13 +55,6 @@ public final class SettingsStore {
         "notika.settings.modeOverride.\(mode.rawValue)"
     }
 
-    // MARK: - Sprache
-
-    public var defaultLanguage: String {
-        get { defaults.string(forKey: "notika.settings.language") ?? "de" }
-        set { defaults.set(newValue, forKey: "notika.settings.language") }
-    }
-
     // MARK: - Migration vom Phase-1a-rawString-Format
 
     private static func migrateIfNeeded(defaults: UserDefaults) {
