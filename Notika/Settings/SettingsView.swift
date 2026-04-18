@@ -20,6 +20,9 @@ struct SettingsView: View {
             Tab("Wörterbuch", systemImage: "character.book.closed") {
                 DictionaryTab()
             }
+            Tab("Verlauf", systemImage: "clock.arrow.circlepath") {
+                HistoryTab()
+            }
             Tab("Über", systemImage: "info.circle") {
                 AboutTab()
             }

@@ -19,6 +19,7 @@ final class DictationCoordinator {
     private let settings = SettingsStore()
     private let textInserter = TextInserter()
     private let costStore = CostStore()
+    private let historyStore = HistoryStore()
 
     private var hotkeyTask: Task<Void, Never>?
     private var levelsTask: Task<Void, Never>?
@@ -151,6 +152,7 @@ final class DictationCoordinator {
                     self.logger.info("Transkript roh: \(transcript.text, privacy: .public)")
 
                     let processed: String
+                    var engineResult: ProcessedText?
                     if let engine = self.makePostProcessingEngine(for: mode) {
                         self.overlay.updateState(.processing(mode: mode))
                         do {
@@ -160,6 +162,7 @@ final class DictationCoordinator {
                                 language: .german
                             )
                             processed = result.text.isEmpty ? transcript.text : result.text
+                            engineResult = result
                             if let model = result.model,
                                let tIn = result.tokensIn,
                                let tOut = result.tokensOut {
@@ -181,6 +184,18 @@ final class DictationCoordinator {
                     let result = await self.textInserter.insert(processed)
                     switch result {
                     case .inserted:
+                        if !processed.isEmpty {
+                            let providerID: PostProcessingEngineID = engineResult?.provider ?? .none
+                            let modelID = engineResult?.model
+                            let cost = engineResult?.costUSD
+                            self.historyStore.append(
+                                text: processed,
+                                mode: mode,
+                                provider: providerID,
+                                modelID: modelID,
+                                costUSD: cost
+                            )
+                        }
                         try? await Task.sleep(for: .milliseconds(300))
                     case .clipboardOnly:
                         self.logger.warning("Auto-Insert nicht möglich — Text nur in Zwischenablage.")
