@@ -51,12 +51,17 @@ public final class CostStore {
 
     private func dailyKey() -> String {
         let comps = calendar.dateComponents([.year, .month, .day], from: now())
-        return String(format: "notika.costs.daily.%04d-%02d-%02d", comps.year!, comps.month!, comps.day!)
+        let y = comps.year ?? 1970
+        let m = comps.month ?? 1
+        let d = comps.day ?? 1
+        return String(format: "notika.costs.daily.%04d-%02d-%02d", y, m, d)
     }
 
     private func monthlyKey() -> String {
         let comps = calendar.dateComponents([.year, .month], from: now())
-        return String(format: "notika.costs.monthly.%04d-%02d", comps.year!, comps.month!)
+        let y = comps.year ?? 1970
+        let m = comps.month ?? 1
+        return String(format: "notika.costs.monthly.%04d-%02d", y, m)
     }
 
     private func readSnapshot(key: String) -> CostSnapshot {
