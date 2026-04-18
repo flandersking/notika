@@ -17,6 +17,7 @@ struct AnthropicProviderRow: View {
 
             HStack {
                 SecureField("API-Key", text: $apiKey)
+                    .textFieldStyle(.roundedBorder)
                 Button("Testen") { testKey() }
                     .disabled(apiKey.isEmpty)
             }
@@ -63,6 +64,7 @@ struct OpenAIProviderRow: View {
 
             HStack {
                 SecureField("API-Key", text: $apiKey)
+                    .textFieldStyle(.roundedBorder)
                 Button("Testen") { testKey() }
                     .disabled(apiKey.isEmpty)
             }
@@ -107,6 +109,7 @@ struct GoogleProviderRow: View {
 
             HStack {
                 SecureField("API-Key", text: $apiKey)
+                    .textFieldStyle(.roundedBorder)
                 Button("Testen") { testKey() }
                     .disabled(apiKey.isEmpty)
             }

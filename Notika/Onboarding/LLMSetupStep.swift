@@ -42,16 +42,19 @@ struct LLMSetupStep: View {
                     ForEach(AnthropicModel.allCases, id: \.self) { Text($0.displayName).tag($0) }
                 }
                 SecureField("API-Key (sk-ant-…)", text: $apiKey)
+                    .textFieldStyle(.roundedBorder)
             case .openAI:
                 Picker("Modell", selection: $openAIModel) {
                     ForEach(OpenAIModel.allCases, id: \.self) { Text($0.displayName).tag($0) }
                 }
                 SecureField("API-Key (sk-…)", text: $apiKey)
+                    .textFieldStyle(.roundedBorder)
             case .google:
                 Picker("Modell", selection: $googleModel) {
                     ForEach(GoogleModel.allCases, id: \.self) { Text($0.displayName).tag($0) }
                 }
                 SecureField("API-Key", text: $apiKey)
+                    .textFieldStyle(.roundedBorder)
             case .ollama:
                 OllamaSection(modelID: $ollamaModel) {}
             }
