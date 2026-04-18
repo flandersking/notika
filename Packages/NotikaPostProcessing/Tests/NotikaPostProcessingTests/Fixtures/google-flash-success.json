@@ -1,0 +1,17 @@
+{
+  "candidates": [
+    {
+      "content": {
+        "parts": [{ "text": "Hallo, wie geht es dir?" }],
+        "role": "model"
+      },
+      "finishReason": "STOP"
+    }
+  ],
+  "usageMetadata": {
+    "promptTokenCount": 30,
+    "candidatesTokenCount": 8,
+    "totalTokenCount": 38
+  },
+  "modelVersion": "gemini-2.5-flash"
+}
