@@ -1,5 +1,6 @@
 import AppKit
 import SwiftUI
+import NotikaCore
 import NotikaMacOS
 import os
 
@@ -12,6 +13,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     private var onboardingWindow: NSWindow?
     private var llmHintWindow: NSWindow?
+    private var whisperConfirmWindow: NSWindow?
     private let coordinator = DictationCoordinator()
 
     func applicationDidFinishLaunching(_ notification: Notification) {
@@ -119,6 +121,51 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private func closeLLMHintSheet() {
         llmHintWindow?.close()
         llmHintWindow = nil
+    }
+
+    // MARK: - Whisper Download Confirmation
+
+    /// Wird nach erfolgreichem Whisper-Modell-Download gezeigt und fragt,
+    /// ob das frisch installierte Modell als Standard-Engine aktiviert werden soll.
+    func showWhisperDownloadConfirmSheet(for model: WhisperModelID, onChoice: @escaping (Bool) -> Void) {
+        if let existing = whisperConfirmWindow {
+            existing.makeKeyAndOrderFront(nil)
+            NSApp.activate(ignoringOtherApps: true)
+            return
+        }
+
+        let hosting = NSHostingController(rootView: WhisperDownloadConfirmSheet(
+            model: model,
+            onActivate: { [weak self] in
+                self?.closeWhisperConfirmSheet()
+                onChoice(true)
+            },
+            onLater: { [weak self] in
+                self?.closeWhisperConfirmSheet()
+                onChoice(false)
+            }
+        ))
+
+        let window = NSWindow(contentViewController: hosting)
+        window.styleMask = [.titled, .closable, .fullSizeContentView]
+        window.titlebarAppearsTransparent = true
+        window.titleVisibility = .hidden
+        window.title = "Spracherkennung"
+        window.setContentSize(NSSize(width: 460, height: 300))
+        window.center()
+        window.isReleasedWhenClosed = false
+        window.level = .floating
+        window.standardWindowButton(.zoomButton)?.isHidden = true
+        window.standardWindowButton(.miniaturizeButton)?.isHidden = true
+
+        self.whisperConfirmWindow = window
+        window.makeKeyAndOrderFront(nil)
+        NSApp.activate(ignoringOtherApps: true)
+    }
+
+    private func closeWhisperConfirmSheet() {
+        whisperConfirmWindow?.close()
+        whisperConfirmWindow = nil
     }
 
     private func openSettingsWindow() {
