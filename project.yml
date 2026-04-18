@@ -54,6 +54,8 @@ targets:
         NSHumanReadableCopyright: "© 2026 Michael Dymny"
         NSMicrophoneUsageDescription: "Notika nimmt Audio auf, um Sprache in Text umzuwandeln."
         NSSpeechRecognitionUsageDescription: "Notika nutzt Apple Speech für on-device Transkription."
+        NSAppTransportSecurity:
+          NSAllowsLocalNetworking: true
     entitlements:
       path: Notika/Resources/Notika.entitlements
       properties:
