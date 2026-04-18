@@ -1,0 +1,4 @@
+{ "models": [
+  { "name": "llama3.2:latest", "modified_at": "2026-04-01T12:00:00Z", "size": 2000000000 },
+  { "name": "qwen2.5:7b", "modified_at": "2026-04-02T12:00:00Z", "size": 4500000000 }
+]}

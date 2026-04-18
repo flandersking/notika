@@ -1,0 +1,10 @@
+{
+  "id": "chatcmpl-x",
+  "model": "llama3.2:latest",
+  "choices": [{
+    "index": 0,
+    "message": { "role": "assistant", "content": "Hallo, wie geht es dir?" },
+    "finish_reason": "stop"
+  }],
+  "usage": { "prompt_tokens": 22, "completion_tokens": 7, "total_tokens": 29 }
+}
