@@ -73,18 +73,7 @@ struct HotkeysTab: View {
 }
 
 // EnginesTab lebt jetzt in `EnginesTab.swift`.
-
-struct DictionaryTab: View {
-    var body: some View {
-        Form {
-            Section {
-                Text("Wörterbuch — folgt in Phase 1b")
-                    .foregroundStyle(.secondary)
-            }
-        }
-        .formStyle(.grouped)
-    }
-}
+// DictionaryTab lebt jetzt in `DictionaryTab.swift`.
 
 struct AboutTab: View {
     var body: some View {
