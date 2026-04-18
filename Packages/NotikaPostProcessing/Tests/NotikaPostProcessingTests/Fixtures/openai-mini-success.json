@@ -1,0 +1,12 @@
+{
+  "id": "resp_abc",
+  "model": "gpt-5.4-mini",
+  "output": [
+    {
+      "type": "message",
+      "role": "assistant",
+      "content": [{ "type": "output_text", "text": "Hallo, wie geht es dir heute?" }]
+    }
+  ],
+  "usage": { "input_tokens": 38, "output_tokens": 9 }
+}
