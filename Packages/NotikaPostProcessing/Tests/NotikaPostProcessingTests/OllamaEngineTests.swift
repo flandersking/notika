@@ -60,4 +60,46 @@ final class OllamaEngineTests: XCTestCase {
         XCTAssertNil(result.costUSD)   // Ollama nicht in PricingTable
         MockURLProtocol.reset()
     }
+
+    func test_process_emptyTranscript_returnsEarly_withoutHTTPCall() async throws {
+        let config = URLSessionConfiguration.ephemeral
+        config.protocolClasses = [MockURLProtocol.self]
+        let session = URLSession(configuration: config)
+        let client = LLMHTTPClient(session: session, timeout: 1.0, retryDelay: 0)
+        var requestCount = 0
+        MockURLProtocol.requestHandler = { _ in
+            requestCount += 1
+            let resp = HTTPURLResponse(url: URL(string: "https://x")!, statusCode: 200, httpVersion: nil, headerFields: nil)!
+            return (resp, Data())
+        }
+        let engine = OllamaEngine(modelID: "llama3.2:latest", httpClient: client)
+        let result = try await engine.process(transcript: "", mode: .literal, language: .german)
+        XCTAssertEqual(result.text, "")
+        XCTAssertEqual(result.provider, .ollama)
+        XCTAssertEqual(result.model, "llama3.2:latest")
+        XCTAssertNil(result.costUSD)
+        XCTAssertEqual(requestCount, 0, "Empty-Transcript darf keinen HTTP-Call machen")
+        MockURLProtocol.reset()
+    }
+
+    func test_process_malformedJSON_throws_invalidResponse() async {
+        let config = URLSessionConfiguration.ephemeral
+        config.protocolClasses = [MockURLProtocol.self]
+        let session = URLSession(configuration: config)
+        let client = LLMHTTPClient(session: session, timeout: 1.0, retryDelay: 0)
+        MockURLProtocol.requestHandler = { req in
+            let resp = HTTPURLResponse(url: req.url!, statusCode: 200, httpVersion: nil, headerFields: nil)!
+            return (resp, Data("not json".utf8))
+        }
+        let engine = OllamaEngine(modelID: "llama3.2:latest", httpClient: client)
+        do {
+            _ = try await engine.process(transcript: "hallo", mode: .literal, language: .german)
+            XCTFail("should throw")
+        } catch let err as LLMError {
+            XCTAssertEqual(err, .invalidResponse)
+        } catch {
+            XCTFail("wrong error: \(error)")
+        }
+        MockURLProtocol.reset()
+    }
 }

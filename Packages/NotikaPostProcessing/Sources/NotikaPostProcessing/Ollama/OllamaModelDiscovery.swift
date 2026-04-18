@@ -29,7 +29,11 @@ public final class OllamaModelDiscovery: Sendable {
         guard let http = response as? HTTPURLResponse, http.statusCode == 200 else {
             throw LLMError.ollamaUnavailable
         }
-        let decoded = try JSONDecoder().decode(TagsResponse.self, from: data)
-        return decoded.models.map(\.name)
+        do {
+            let decoded = try JSONDecoder().decode(TagsResponse.self, from: data)
+            return decoded.models.map(\.name)
+        } catch {
+            throw LLMError.invalidResponse
+        }
     }
 }

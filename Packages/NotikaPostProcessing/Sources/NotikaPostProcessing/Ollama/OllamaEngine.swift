@@ -67,9 +67,9 @@ public final class OllamaEngine: PostProcessingEngine {
         do {
             data = try await client.send(req)
         } catch let err as LLMError {
-            // Wenn der Server gar nicht da ist, hat LLMHTTPClient .network geworfen.
-            // Wir mappen das auf .ollamaUnavailable für klare UI-Meldung.
+            // Wenn der Server nicht erreichbar ist oder hängt, mappen wir auf .ollamaUnavailable
             if case .network = err { throw LLMError.ollamaUnavailable }
+            if case .timeout = err { throw LLMError.ollamaUnavailable }
             throw err
         }
 
