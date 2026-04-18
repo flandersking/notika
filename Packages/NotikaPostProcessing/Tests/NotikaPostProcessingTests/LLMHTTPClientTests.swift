@@ -72,6 +72,63 @@ final class LLMHTTPClientTests: XCTestCase {
         do { _ = try await client.send(req) } catch {}
         XCTAssertEqual(attempts.value, 1)
     }
+
+    func test_send_retries_once_on_timeout_then_succeeds() async throws {
+        let attempts = AttemptCounter()
+        MockURLProtocol.requestHandler = { req in
+            let n = attempts.increment()
+            if n == 1 { throw URLError(.timedOut) }
+            let resp = HTTPURLResponse(url: req.url!, statusCode: 200, httpVersion: nil, headerFields: nil)!
+            return (resp, Data("after-timeout".utf8))
+        }
+        var req = URLRequest(url: URL(string: "https://example.com/x")!)
+        req.httpMethod = "POST"
+        let data = try await client.send(req)
+        XCTAssertEqual(String(decoding: data, as: UTF8.self), "after-timeout")
+        XCTAssertEqual(attempts.value, 2)
+    }
+
+    func test_send_propagates_network_after_one_retry() async {
+        let attempts = AttemptCounter()
+        MockURLProtocol.requestHandler = { _ in
+            _ = attempts.increment()
+            throw URLError(.notConnectedToInternet)
+        }
+        let req = URLRequest(url: URL(string: "https://example.com/x")!)
+        do {
+            _ = try await client.send(req)
+            XCTFail("should throw")
+        } catch let err as LLMError {
+            XCTAssertEqual(err, .network)
+        } catch {
+            XCTFail("wrong error: \(error)")
+        }
+        XCTAssertEqual(attempts.value, 2, "Genau ein Retry — kein dritter Versuch")
+    }
+
+    func test_send_returns_rateLimit_with_retryAfter_no_retry() async {
+        let attempts = AttemptCounter()
+        MockURLProtocol.requestHandler = { req in
+            _ = attempts.increment()
+            let resp = HTTPURLResponse(
+                url: req.url!,
+                statusCode: 429,
+                httpVersion: nil,
+                headerFields: ["Retry-After": "7"]
+            )!
+            return (resp, Data())
+        }
+        let req = URLRequest(url: URL(string: "https://example.com/x")!)
+        do {
+            _ = try await client.send(req)
+            XCTFail("should throw")
+        } catch let err as LLMError {
+            XCTAssertEqual(err, .rateLimit(retryAfter: 7))
+        } catch {
+            XCTFail("wrong error: \(error)")
+        }
+        XCTAssertEqual(attempts.value, 1, "Rate-Limit darf nicht retried werden")
+    }
 }
 
 final class AttemptCounter: @unchecked Sendable {

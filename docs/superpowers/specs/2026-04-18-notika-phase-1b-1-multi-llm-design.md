@@ -310,7 +310,7 @@ Flow pro Call (`LLMHTTPClient.send(_:)`):
 ## 7. Sicherheit & Privacy
 
 - **API-Keys in Keychain** (Service `app.notika.apikey.<provider>`, Account = leer). Keine Persistierung in UserDefaults oder Plain-Files.
-- **Logging-Disziplin** (`os.Logger` Subsystem `app.notika.postprocessing`):
+- **Logging-Disziplin** (`os.Logger` Subsystem `com.notika.mac`, Categories wie `PostProcessing.HTTP`):
   - Erlaubt: Provider-Name, Modell-ID, HTTP-Status-Code, Längen (Zeichen, Tokens), Latenz.
   - Verboten: API-Keys (auch nicht teilweise), Diktat-Inhalt, Response-Bodies.
 - **TLS:** Nur HTTPS für Cloud-Provider. ATS-Default ist OK. Ollama läuft per HTTP auf localhost — explizit erlaubt via `NSAllowsLocalNetworking` im Info.plist.

@@ -22,3 +22,20 @@ public enum LLMError: Error, Sendable, Equatable {
         }
     }
 }
+
+extension LLMError: CustomStringConvertible {
+    public var description: String {
+        switch self {
+        case .invalidKey:                  return "invalidKey"
+        case .rateLimit(let retryAfter):
+            if let retryAfter { return "rateLimit(retryAfter: \(retryAfter)s)" }
+            return "rateLimit"
+        case .network:                     return "network"
+        case .timeout:                     return "timeout"
+        case .serverError(let status, _):  return "serverError(status: \(status))"
+        case .invalidResponse:             return "invalidResponse"
+        case .ollamaUnavailable:           return "ollamaUnavailable"
+        case .modelNotFound:               return "modelNotFound"
+        }
+    }
+}

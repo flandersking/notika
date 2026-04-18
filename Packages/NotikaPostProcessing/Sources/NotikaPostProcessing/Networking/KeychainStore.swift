@@ -1,6 +1,5 @@
 import Foundation
 import Security
-import NotikaCore
 
 public enum KeychainProvider: String, Sendable {
     case anthropic
