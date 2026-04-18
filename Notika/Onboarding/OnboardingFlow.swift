@@ -4,13 +4,15 @@ import NotikaMacOS
 enum OnboardingStep: Int, CaseIterable {
     case welcome
     case permissions
+    case llmSetup
     case finished
 
     var title: String {
         switch self {
-        case .welcome: return "Willkommen bei Notika"
+        case .welcome:     return "Willkommen bei Notika"
         case .permissions: return "Berechtigungen erteilen"
-        case .finished: return "Alles bereit"
+        case .llmSetup:    return "KI-Helfer einrichten"
+        case .finished:    return "Alles bereit"
         }
     }
 }
@@ -32,8 +34,13 @@ struct OnboardingFlow: View {
                     }
                 case .permissions:
                     PermissionsStep(checker: checker) {
-                        step = .finished
+                        step = .llmSetup
                     }
+                case .llmSetup:
+                    LLMSetupStep(
+                        onContinue: { step = .finished },
+                        onSkip:     { step = .finished }
+                    )
                 case .finished:
                     FinishedStep {
                         hasCompletedOnboarding = true
