@@ -53,9 +53,12 @@ struct HotkeysTab: View {
             } header: {
                 Text("Kurzbefehle")
             } footer: {
-                Text("Halte eine Taste gedrückt oder drücke eine Kombination, um einen Kurzbefehl aufzuzeichnen. Klicke das ✕-Symbol, um ihn zu entfernen.")
-                    .font(.footnote)
-                    .foregroundStyle(.secondary)
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Klicke in das Feld und drücke die gewünschte Taste oder Kombination. Klicke das ✕-Symbol, um den Kurzbefehl zu entfernen.")
+                    Text("Tipp: Eine einzelne Funktionstaste reicht aus — drücke z. B. einfach F5, F6 oder F7 (ohne ⌘/⌥/⌃). Buchstaben oder Ziffern müssen aus technischen Gründen mit einem Modifier (⌘/⌥/⌃) kombiniert werden, damit sie nicht das normale Tippen blockieren.")
+                }
+                .font(.footnote)
+                .foregroundStyle(.secondary)
             }
 
             Section {
