@@ -29,6 +29,24 @@ public final class SettingsStore {
         }
     }
 
+    // MARK: - STT-Engine
+
+    public var sttEngineChoice: STTEngineChoice {
+        get {
+            guard let data = defaults.data(forKey: "notika.settings.sttEngineChoice"),
+                  let value = try? JSONDecoder().decode(STTEngineChoice.self, from: data)
+            else {
+                return .apple
+            }
+            return value
+        }
+        set {
+            if let data = try? JSONEncoder().encode(newValue) {
+                defaults.set(data, forKey: "notika.settings.sttEngineChoice")
+            }
+        }
+    }
+
     // MARK: - Pro-Modus-Override (leer = nutzt global)
 
     public func override(for mode: DictationMode) -> LLMChoice? {
