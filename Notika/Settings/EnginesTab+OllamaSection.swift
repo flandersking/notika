@@ -15,9 +15,11 @@ struct OllamaSection: View {
                         Text("(noch keine Auswahl)").tag("")
                     }
                     .disabled(true)
-                case .available(let models):
+                case .available(let infos):
                     Picker("Modell", selection: $modelID) {
-                        ForEach(models, id: \.self) { Text($0).tag($0) }
+                        ForEach(infos, id: \.self) { info in
+                            Text("\(info.name) (\(humanReadable(info.sizeBytes)))").tag(info.name)
+                        }
                     }
                     .onChange(of: modelID) { _, _ in onChange() }
                 case .empty, .unavailable:
@@ -63,13 +65,14 @@ struct OllamaSection: View {
         status = .loading
         let discovery = OllamaModelDiscovery()
         do {
-            let models = try await discovery.installedModels()
-            if models.isEmpty {
+            let infos = try await discovery.installedModelInfos()
+            if infos.isEmpty {
                 status = .empty
             } else {
-                status = .available(models)
-                if modelID.isEmpty || !models.contains(modelID) {
-                    modelID = models.first(where: { $0.contains(":latest") }) ?? models.first ?? ""
+                status = .available(infos)
+                let names = infos.map(\.name)
+                if modelID.isEmpty || !names.contains(modelID) {
+                    modelID = infos.first(where: { $0.name.contains(":latest") })?.name ?? infos.first?.name ?? ""
                     onChange()
                 }
             }
@@ -78,7 +81,14 @@ struct OllamaSection: View {
         }
     }
 
+    private func humanReadable(_ bytes: Int64) -> String {
+        let gb = Double(bytes) / 1_073_741_824.0
+        if gb >= 1.0 { return String(format: "%.1f GB", gb) }
+        let mb = Double(bytes) / 1_048_576.0
+        return String(format: "%.0f MB", mb)
+    }
+
     enum OllamaStatus {
-        case idle, loading, available([String]), empty, unavailable
+        case idle, loading, available([OllamaModelInfo]), empty, unavailable
     }
 }

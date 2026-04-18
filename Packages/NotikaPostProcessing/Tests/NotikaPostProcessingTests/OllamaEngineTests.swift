@@ -21,6 +21,25 @@ final class OllamaEngineTests: XCTestCase {
         MockURLProtocol.reset()
     }
 
+    func test_modelDiscovery_returns_installed_model_infos_with_sizes() async throws {
+        let config = URLSessionConfiguration.ephemeral
+        config.protocolClasses = [MockURLProtocol.self]
+        let session = URLSession(configuration: config)
+        let url = Bundle.module.url(forResource: "ollama-tags", withExtension: "json", subdirectory: "Fixtures")!
+        let fixtureData = try Data(contentsOf: url)
+        MockURLProtocol.requestHandler = { req in
+            XCTAssertEqual(req.url?.absoluteString, "http://localhost:11434/api/tags")
+            let resp = HTTPURLResponse(url: req.url!, statusCode: 200, httpVersion: nil, headerFields: nil)!
+            return (resp, fixtureData)
+        }
+        let discovery = OllamaModelDiscovery(session: session)
+        let infos = try await discovery.installedModelInfos()
+        XCTAssertEqual(infos.count, 2)
+        XCTAssertEqual(infos[0], OllamaModelInfo(name: "llama3.2:latest", sizeBytes: 2_000_000_000))
+        XCTAssertEqual(infos[1], OllamaModelInfo(name: "qwen2.5:7b", sizeBytes: 4_500_000_000))
+        MockURLProtocol.reset()
+    }
+
     func test_modelDiscovery_throws_unavailable_when_server_down() async {
         let config = URLSessionConfiguration.ephemeral
         config.protocolClasses = [MockURLProtocol.self]
