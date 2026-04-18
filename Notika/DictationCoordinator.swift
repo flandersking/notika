@@ -4,6 +4,7 @@ import NotikaCore
 import NotikaMacOS
 import NotikaPostProcessing
 import NotikaTranscription
+import NotikaDictionary
 import NotikaWhisper
 import os
 
@@ -22,6 +23,7 @@ final class DictationCoordinator {
     private let costStore = CostStore()
     private let historyStore = HistoryStore()
     private let whisperModelStore = WhisperModelStore()
+    private let dictionaryStore = DictionaryStore()
 
     private var hotkeyTask: Task<Void, Never>?
     private var levelsTask: Task<Void, Never>?
@@ -157,12 +159,13 @@ final class DictationCoordinator {
 
             do {
                 let engine = self.resolveTranscriptionEngine()
+                let hints = self.dictionaryStore.hintsForLanguage(.german)
                 let transcript: Transcript
                 do {
                     transcript = try await engine.transcribe(
                         audio: .file(audioURL),
                         language: .german,
-                        hints: []
+                        hints: hints
                     )
                 } catch let err as WhisperError {
                     self.logger.warning("Whisper-Fehler: \(String(describing: err), privacy: .public) — Fallback auf Apple")
@@ -173,7 +176,7 @@ final class DictationCoordinator {
                     transcript = try await appleEngine.transcribe(
                         audio: .file(audioURL),
                         language: .german,
-                        hints: []
+                        hints: hints
                     )
                 }
 
