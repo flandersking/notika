@@ -25,7 +25,7 @@ final class WhisperModelStoreTests: XCTestCase {
 
     @MainActor
     func test_installedModels_findsManuallyCreatedDir() throws {
-        let modelDir = tempDir.appendingPathComponent(WhisperModelID.turbo.rawValue)
+        let modelDir = store.diskPath(for: .turbo)
         try FileManager.default.createDirectory(at: modelDir, withIntermediateDirectories: true)
         try Data("dummy".utf8).write(to: modelDir.appendingPathComponent("model.txt"))
         XCTAssertEqual(store.installedModels(), [.turbo])
@@ -40,7 +40,7 @@ final class WhisperModelStoreTests: XCTestCase {
 
     @MainActor
     func test_deleteModel_removesDirectory() throws {
-        let modelDir = tempDir.appendingPathComponent(WhisperModelID.base.rawValue)
+        let modelDir = store.diskPath(for: .base)
         try FileManager.default.createDirectory(at: modelDir, withIntermediateDirectories: true)
         try Data("x".utf8).write(to: modelDir.appendingPathComponent("file"))
         XCTAssertTrue(FileManager.default.fileExists(atPath: modelDir.path))

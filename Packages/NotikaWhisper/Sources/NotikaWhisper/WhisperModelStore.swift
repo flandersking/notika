@@ -15,14 +15,24 @@ public final class WhisperModelStore {
         let dir = appSupport.appendingPathComponent("Notika/WhisperModels")
         try? FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
         self.modelsDirectory = dir
+        // One-time Cleanup alter flacher Layout-Reste aus Phase-1b-2-pre-hotfix
+        cleanupLegacyFlatLayout()
     }
 
     public init(modelsDirectory: URL) {
         self.modelsDirectory = modelsDirectory
+        // One-time Cleanup alter flacher Layout-Reste aus Phase-1b-2-pre-hotfix
+        cleanupLegacyFlatLayout()
     }
 
+    /// WhisperKit legt Modelle unter `<modelsDirectory>/models/argmaxinc/whisperkit-coreml/<variant>/` ab.
+    /// Wir spiegeln diese Struktur, damit `installedModels()` und `deleteModel()` die echten Dateien finden.
     public func diskPath(for model: WhisperModelID) -> URL {
-        modelsDirectory.appendingPathComponent(model.rawValue)
+        modelsDirectory
+            .appendingPathComponent("models")
+            .appendingPathComponent("argmaxinc")
+            .appendingPathComponent("whisperkit-coreml")
+            .appendingPathComponent(model.rawValue)
     }
 
     public func installedModels() -> [WhisperModelID] {
@@ -103,5 +113,27 @@ public final class WhisperModelStore {
         activeProgresses.removeValue(forKey: model)
         let path = diskPath(for: model)
         try? FileManager.default.removeItem(at: path)
+    }
+
+    private func cleanupLegacyFlatLayout() {
+        // Phase 1b-2-Pre-Hotfix legte Modell-Verzeichnisse FLACH unter modelsDirectory ab.
+        // Seit Hotfix liegen sie unter models/argmaxinc/whisperkit-coreml/.
+        // Lösche die alten flachen Leichen — nur wenn sie leer sind (wir wollen keine echten User-Daten löschen).
+        for candidate in WhisperModelID.allCases {
+            let flatPath = modelsDirectory.appendingPathComponent(candidate.rawValue)
+            guard FileManager.default.fileExists(atPath: flatPath.path),
+                  let contents = try? FileManager.default.contentsOfDirectory(atPath: flatPath.path),
+                  contents.isEmpty
+            else { continue }
+            try? FileManager.default.removeItem(at: flatPath)
+            logger.info("Entfernte Legacy-leeren Ordner: \(flatPath.lastPathComponent, privacy: .public)")
+        }
+        // Zusätzlich: Der alte falsche Name „openai_whisper-large-v3-turbo" (Hotfix b3b4ce9 ersetzte ihn):
+        let legacyTurbo = modelsDirectory.appendingPathComponent("openai_whisper-large-v3-turbo")
+        if FileManager.default.fileExists(atPath: legacyTurbo.path),
+           let contents = try? FileManager.default.contentsOfDirectory(atPath: legacyTurbo.path),
+           contents.isEmpty {
+            try? FileManager.default.removeItem(at: legacyTurbo)
+        }
     }
 }
