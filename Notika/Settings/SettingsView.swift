@@ -14,11 +14,8 @@ struct SettingsView: View {
             Tab("Modi", systemImage: "text.badge.checkmark") {
                 PromptsTab()
             }
-            Tab("Engines", systemImage: "cpu") {
-                EnginesTab()
-            }
-            Tab("Spracherkennung", systemImage: "waveform.badge.mic") {
-                TranscriptionTab()
+            Tab("KI", systemImage: "sparkles") {
+                AITab()
             }
             Tab("Wörterbuch", systemImage: "character.book.closed") {
                 DictionaryTab()
