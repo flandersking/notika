@@ -21,7 +21,8 @@ let package = Package(
         ),
         .testTarget(
             name: "NotikaPostProcessingTests",
-            dependencies: ["NotikaPostProcessing"]
+            dependencies: ["NotikaPostProcessing"],
+            resources: [.copy("Fixtures")]
         )
     ]
 )

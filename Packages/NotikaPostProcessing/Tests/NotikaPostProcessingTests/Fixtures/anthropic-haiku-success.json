@@ -1,0 +1,11 @@
+{
+  "id": "msg_abc123",
+  "type": "message",
+  "role": "assistant",
+  "model": "claude-haiku-4-5",
+  "content": [
+    { "type": "text", "text": "Hallo, wie geht es Ihnen heute?" }
+  ],
+  "stop_reason": "end_turn",
+  "usage": { "input_tokens": 42, "output_tokens": 11 }
+}
