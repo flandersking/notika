@@ -1,6 +1,21 @@
 # Notika — Status
 
-> Letzte Aktualisierung: **2026-04-18** (Phase 1b-1 abgeschlossen)
+> Letzte Aktualisierung: **2026-04-18** (Phase 1b-2 abgeschlossen)
+
+## Phase 1b-2 abgeschlossen (2026-04-18)
+
+- WhisperKit (0.18.0) als SPM-Dependency in NotikaWhisper
+- 3 kuratierte Whisper-Modelle (Base / Turbo / Large V3) downloadbar
+- Eigener Settings-Tab „Spracherkennung" mit Engine-Picker + Modell-Liste
+- Confirm-Sheet nach Download („Als Standard verwenden?")
+- Auto-Sprach-Detection (Deutsch/Englisch)
+- Auto-Fallback auf Apple SpeechAnalyzer bei Whisper-Fehler
+- 100 % offline nach Modell-Download (DSGVO-Story für Phase 2)
+- iOS-tauglich (kein AppKit in NotikaWhisper)
+- 71 Tests grün (26 NotikaCore + 15 NotikaWhisper + 30 NotikaPostProcessing)
+- Build SUCCEEDED
+
+Nächste Sub-Phase: 1b-3 (SwiftData-Dictionary)
 
 ## Phase 1b-1 abgeschlossen (2026-04-18)
 
