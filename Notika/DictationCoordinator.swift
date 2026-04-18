@@ -18,6 +18,7 @@ final class DictationCoordinator {
     private let transcriptionEngine: TranscriptionEngine
     private let settings = SettingsStore()
     private let textInserter = TextInserter()
+    private let costStore = CostStore()
 
     private var hotkeyTask: Task<Void, Never>?
     private var levelsTask: Task<Void, Never>?
@@ -151,13 +152,25 @@ final class DictationCoordinator {
                     let processed: String
                     if let engine = self.makePostProcessingEngine(for: mode) {
                         self.overlay.updateState(.processing(mode: mode))
-                        let result = try await engine.process(
-                            transcript: transcript.text,
-                            mode: mode,
-                            language: .german
-                        )
-                        processed = result.text
-                        self.logger.info("Transkript final (LLM): \(processed, privacy: .public)")
+                        do {
+                            let result = try await engine.process(
+                                transcript: transcript.text,
+                                mode: mode,
+                                language: .german
+                            )
+                            processed = result.text.isEmpty ? transcript.text : result.text
+                            if let model = result.model,
+                               let tIn = result.tokensIn,
+                               let tOut = result.tokensOut {
+                                self.costStore.record(modelID: model, tokensIn: tIn, tokensOut: tOut)
+                            }
+                            self.logger.info("Transkript final (LLM): \(processed, privacy: .public)")
+                        } catch let err as LLMError {
+                            self.logger.warning("LLM-Fehler: \(String(describing: err), privacy: .public) — Rohtext-Fallback")
+                            processed = transcript.text
+                            self.overlay.updateState(.error(message: err.userFacingMessage))
+                            try? await Task.sleep(for: .seconds(2))
+                        }
                     } else {
                         processed = transcript.text
                         self.logger.info("Ohne LLM — Rohtranskript durchgereicht")
