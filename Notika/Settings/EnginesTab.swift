@@ -39,7 +39,6 @@ struct EnginesTab: View {
     @State private var openAIModel: OpenAIModel = .mini54
     @State private var googleModel: GoogleModel = .flash25
     @State private var ollamaModel: String = ""
-    @State private var showAdvanced = false
 
     var body: some View {
         Form {
@@ -60,14 +59,6 @@ struct EnginesTab: View {
                 }
             } header: {
                 Text("Standard für alle Modi")
-            }
-
-            Section {
-                DisclosureGroup("Erweitert: Pro Modus überschreiben", isExpanded: $showAdvanced) {
-                    ForEach(DictationMode.allCases) { mode in
-                        ModeOverrideRow(mode: mode, settings: settings)
-                    }
-                }
             }
         }
         .formStyle(.grouped)
@@ -97,28 +88,6 @@ struct EnginesTab: View {
         case .ollama:    new = .ollama(modelID: ollamaModel)
         }
         settings.globalLLMChoice = new
-    }
-}
-
-private struct ModeOverrideRow: View {
-    let mode: DictationMode
-    @Bindable var settings: SettingsStore
-    @State private var useGlobal: Bool = true
-
-    var body: some View {
-        HStack {
-            Text(mode.displayName)
-            Spacer()
-            // Vereinfachte Override-UI: nur Toggle „nutzt Standard" — vollständige
-            // Sub-Picker pro Modus folgen, wenn User es braucht.
-            Toggle("Standard", isOn: $useGlobal)
-                .onChange(of: useGlobal) { _, on in
-                    if on { settings.setOverride(nil, for: mode) }
-                }
-        }
-        .task {
-            useGlobal = settings.override(for: mode) == nil
-        }
     }
 }
 
