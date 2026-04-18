@@ -33,7 +33,7 @@ struct TranscriptionTab: View {
             } header: {
                 Text("Wer hört zu und schreibt deine Worte mit?")
             } footer: {
-                Text("Klicke auf ein Modell, um es zu aktivieren. Apple ist immer verfügbar; Whisper-Modelle musst du erst laden.")
+                Text("Nutze „Aktivieren" beim jeweiligen Modell, um es einzuschalten. Apple ist immer verfügbar; Whisper-Modelle musst du erst laden.")
                     .font(.footnote)
                     .foregroundStyle(.secondary)
             }
@@ -85,30 +85,29 @@ struct TranscriptionTab: View {
 
     @ViewBuilder
     private var appleRow: some View {
-        Button {
-            activate(.apple)
-        } label: {
-            HStack(spacing: 12) {
-                Image(systemName: isActiveApple ? "largecircle.fill.circle" : "circle")
-                    .foregroundStyle(isActiveApple ? Color.accentColor : .secondary)
-                    .font(.title3)
-                VStack(alignment: .leading, spacing: 2) {
-                    Text("Apple SpeechAnalyzer")
-                        .foregroundStyle(.primary)
-                    Text("System · 0 MB · immer verfügbar")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                }
-                Spacer()
-                if isActiveApple {
-                    Label("aktiv", systemImage: "checkmark.circle.fill")
-                        .foregroundStyle(.green)
-                        .font(.caption)
-                }
+        HStack(spacing: 12) {
+            Image(systemName: isActiveApple ? "largecircle.fill.circle" : "circle")
+                .foregroundStyle(isActiveApple ? Color.accentColor : .secondary)
+                .font(.title3)
+            VStack(alignment: .leading, spacing: 2) {
+                Text("Apple SpeechAnalyzer")
+                    .foregroundStyle(.primary)
+                Text("System · 0 MB · immer verfügbar")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
             }
-            .contentShape(Rectangle())
+            Spacer()
+            if isActiveApple {
+                Label("aktiv", systemImage: "checkmark.circle.fill")
+                    .foregroundStyle(.green)
+                    .font(.caption)
+            } else {
+                Button("Aktivieren") { activate(.apple) }
+                    .buttonStyle(.borderedProminent)
+                    .controlSize(.small)
+            }
         }
-        .buttonStyle(.plain)
+        .padding(.vertical, 4)
     }
 
     private var isActiveApple: Bool {

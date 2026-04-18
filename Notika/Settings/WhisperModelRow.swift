@@ -29,12 +29,6 @@ struct WhisperModelRow: View {
                 Spacer()
                 trailingControl
             }
-            .contentShape(Rectangle())
-            .onTapGesture {
-                if installed, !isActive {
-                    onActivate()
-                }
-            }
             if let progress {
                 progressView(progress)
             }
@@ -81,11 +75,18 @@ struct WhisperModelRow: View {
     @ViewBuilder
     private var trailingControl: some View {
         if installed {
-            Button("Löschen", role: .destructive) {
-                deleteConfirm = true
+            HStack(spacing: 8) {
+                if !isActive {
+                    Button("Aktivieren") { onActivate() }
+                        .buttonStyle(.borderedProminent)
+                        .controlSize(.small)
+                }
+                Button("Löschen", role: .destructive) {
+                    deleteConfirm = true
+                }
+                .buttonStyle(.bordered)
+                .controlSize(.small)
             }
-            .buttonStyle(.bordered)
-            .controlSize(.small)
         } else if let progress, case .downloading = progress.state {
             Button("Abbrechen") {
                 modelStore.cancelDownload(model)
