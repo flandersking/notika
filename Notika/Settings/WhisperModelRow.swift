@@ -6,6 +6,7 @@ struct WhisperModelRow: View {
     let model: WhisperModelID
     let modelStore: WhisperModelStore
     let isActive: Bool
+    let onActivate: () -> Void
     let onChange: () -> Void
 
     @State private var progress: WhisperModelDownloadProgress?
@@ -14,15 +15,25 @@ struct WhisperModelRow: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            HStack {
+            HStack(spacing: 12) {
+                Image(systemName: radioIcon)
+                    .foregroundStyle(radioColor)
+                    .font(.title3)
                 VStack(alignment: .leading, spacing: 2) {
                     Text(model.displayName)
-                    Text(humanReadableSize)
+                        .foregroundStyle(.primary)
+                    Text(subtitle)
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
                 Spacer()
                 trailingControl
+            }
+            .contentShape(Rectangle())
+            .onTapGesture {
+                if installed, !isActive {
+                    onActivate()
+                }
             }
             if let progress {
                 progressView(progress)
@@ -42,6 +53,23 @@ struct WhisperModelRow: View {
         }
     }
 
+    private var radioIcon: String {
+        if isActive { return "largecircle.fill.circle" }
+        if installed { return "circle" }
+        return "arrow.down.circle.dotted"
+    }
+
+    private var radioColor: Color {
+        if isActive { return .accentColor }
+        return .secondary
+    }
+
+    private var subtitle: String {
+        if installed && isActive { return "\(humanReadableSize) · aktiv" }
+        if installed { return "\(humanReadableSize) · installiert" }
+        return humanReadableSize
+    }
+
     private var humanReadableSize: String {
         let mb = Double(model.approximateBytes) / 1_048_576.0
         if mb >= 1_000 {
@@ -53,22 +81,11 @@ struct WhisperModelRow: View {
     @ViewBuilder
     private var trailingControl: some View {
         if installed {
-            HStack(spacing: 8) {
-                if isActive {
-                    Label("aktiv", systemImage: "checkmark.circle.fill")
-                        .foregroundStyle(.green)
-                        .font(.caption)
-                } else {
-                    Label("installiert", systemImage: "checkmark.circle")
-                        .foregroundStyle(.secondary)
-                        .font(.caption)
-                }
-                Button("Löschen", role: .destructive) {
-                    deleteConfirm = true
-                }
-                .buttonStyle(.bordered)
-                .controlSize(.small)
+            Button("Löschen", role: .destructive) {
+                deleteConfirm = true
             }
+            .buttonStyle(.bordered)
+            .controlSize(.small)
         } else if let progress, case .downloading = progress.state {
             Button("Abbrechen") {
                 modelStore.cancelDownload(model)

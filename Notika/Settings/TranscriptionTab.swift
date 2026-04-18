@@ -6,85 +6,72 @@ struct TranscriptionTab: View {
     @State private var settings = SettingsStore()
     @State private var modelStore = WhisperModelStore()
     @State private var installed: [WhisperModelID] = []
-    @State private var activeKind: ActiveKind = .apple
-    @State private var activeWhisperModel: WhisperModelID = .turbo
-
-    enum ActiveKind: String, CaseIterable, Identifiable {
-        case apple, whisper
-        var id: String { rawValue }
-        var displayName: String {
-            switch self {
-            case .apple:   return "Apple SpeechAnalyzer (on-device, immer verfügbar)"
-            case .whisper: return "Whisper (lokal)"
-            }
-        }
-    }
 
     var body: some View {
         Form {
             Section {
-                Picker("Aktive Spracherkennung", selection: $activeKind) {
-                    ForEach(ActiveKind.allCases) { Text($0.displayName).tag($0) }
-                }
-                .pickerStyle(.radioGroup)
-                .onChange(of: activeKind) { _, _ in writeChoice() }
-
-                if activeKind == .whisper {
-                    Picker("Modell", selection: $activeWhisperModel) {
-                        ForEach(installed, id: \.self) { Text($0.displayName).tag($0) }
-                    }
-                    .disabled(installed.isEmpty)
-                    .onChange(of: activeWhisperModel) { _, _ in writeChoice() }
-                    if installed.isEmpty {
-                        Text("Lade unten ein Modell, um Whisper zu aktivieren.")
-                            .font(.footnote)
-                            .foregroundStyle(.secondary)
-                    }
-                }
-            } header: {
-                Text("Aktive Spracherkennung")
-            }
-
-            Section {
                 appleRow
                 ForEach(WhisperModelID.allCases, id: \.self) { model in
-                    WhisperModelRow(model: model, modelStore: modelStore, isActive: isActive(model)) {
-                        reloadInstalled()
-                        if installed.contains(model), settings.sttEngineChoice == .apple {
-                            AppDelegate.shared?.showWhisperDownloadConfirmSheet(for: model) { activate in
-                                if activate {
-                                    settings.sttEngineChoice = .whisper(model)
-                                    activeKind = .whisper
-                                    activeWhisperModel = model
+                    WhisperModelRow(
+                        model: model,
+                        modelStore: modelStore,
+                        isActive: isActive(model),
+                        onActivate: { activate(.whisper(model)) },
+                        onChange: {
+                            reloadInstalled()
+                            if installed.contains(model), settings.sttEngineChoice == .apple {
+                                AppDelegate.shared?.showWhisperDownloadConfirmSheet(for: model) { activate in
+                                    if activate {
+                                        self.activate(.whisper(model))
+                                    }
                                 }
                             }
                         }
-                    }
+                    )
                 }
             } header: {
-                Text("Modelle")
+                Text("Wer hört zu und schreibt deine Worte mit?")
+            } footer: {
+                Text("Klicke auf ein Modell, um es zu aktivieren. Apple ist immer verfügbar; Whisper-Modelle musst du erst laden.")
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
             }
         }
         .formStyle(.grouped)
-        .task { loadFromSettings() }
+        .task { reloadInstalled() }
     }
 
     @ViewBuilder
     private var appleRow: some View {
-        HStack {
-            VStack(alignment: .leading, spacing: 2) {
-                Text("Apple SpeechAnalyzer")
-                Text("System · 0 MB")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+        Button {
+            activate(.apple)
+        } label: {
+            HStack(spacing: 12) {
+                Image(systemName: isActiveApple ? "largecircle.fill.circle" : "circle")
+                    .foregroundStyle(isActiveApple ? Color.accentColor : .secondary)
+                    .font(.title3)
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("Apple SpeechAnalyzer")
+                        .foregroundStyle(.primary)
+                    Text("System · 0 MB · immer verfügbar")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+                Spacer()
+                if isActiveApple {
+                    Label("aktiv", systemImage: "checkmark.circle.fill")
+                        .foregroundStyle(.green)
+                        .font(.caption)
+                }
             }
-            Spacer()
-            if case .apple = settings.sttEngineChoice {
-                Label("aktiv", systemImage: "checkmark.circle.fill")
-                    .foregroundStyle(.green)
-                    .font(.caption)
-            }
+            .contentShape(Rectangle())
         }
+        .buttonStyle(.plain)
+    }
+
+    private var isActiveApple: Bool {
+        if case .apple = settings.sttEngineChoice { return true }
+        return false
     }
 
     private func isActive(_ model: WhisperModelID) -> Bool {
@@ -92,29 +79,11 @@ struct TranscriptionTab: View {
         return false
     }
 
-    private func loadFromSettings() {
-        installed = modelStore.installedModels()
-        switch settings.sttEngineChoice {
-        case .apple:
-            activeKind = .apple
-        case .whisper(let m):
-            activeKind = .whisper
-            activeWhisperModel = m
-        }
+    private func activate(_ choice: STTEngineChoice) {
+        settings.sttEngineChoice = choice
     }
 
     private func reloadInstalled() {
         installed = modelStore.installedModels()
-    }
-
-    private func writeChoice() {
-        switch activeKind {
-        case .apple:
-            settings.sttEngineChoice = .apple
-        case .whisper:
-            if installed.contains(activeWhisperModel) {
-                settings.sttEngineChoice = .whisper(activeWhisperModel)
-            }
-        }
     }
 }

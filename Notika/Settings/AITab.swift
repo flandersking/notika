@@ -21,7 +21,7 @@ struct AITab: View {
                 pipelineArrow
                 pipelineBox(icon: "waveform.badge.mic", title: "1. Spracherkennung", subtitle: "Apple oder Whisper", color: .purple)
                 pipelineArrow
-                pipelineBox(icon: "sparkles", title: "2. Textbearbeitung", subtitle: "Claude, ChatGPT, …", color: .pink)
+                pipelineBox(icon: "sparkles", title: "2. Textbearbeitung (optional)", subtitle: "Claude, ChatGPT, …", color: .pink)
                 pipelineArrow
                 pipelineBox(icon: "doc.text", title: "Fertig in App", subtitle: nil, color: .green)
             }
@@ -84,7 +84,7 @@ struct AITab: View {
                 Text("Textbearbeitung")
                     .font(.title2).bold()
             }
-            Text("Wer poliert den erkannten Text? (Punktuation, Emojis, formelle Anrede)")
+            Text("**Optional.** Wer poliert den erkannten Text? (Punktuation, Emojis, formelle Anrede). Nur nötig, wenn du KI-Polishing willst — wer „Kein KI-Helfer“ wählt, bekommt den Rohtext direkt.")
                 .font(.callout)
                 .foregroundStyle(.secondary)
             EnginesTab()
