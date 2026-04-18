@@ -21,6 +21,7 @@ struct WhisperModelRow: View {
                     .font(.title3)
                 VStack(alignment: .leading, spacing: 2) {
                     Text(model.displayName)
+                        .font(.body.weight(isActive ? .semibold : .regular))
                         .foregroundStyle(.primary)
                     Text(subtitle)
                         .font(.caption)
@@ -33,7 +34,12 @@ struct WhisperModelRow: View {
                 progressView(progress)
             }
         }
-        .padding(.vertical, 4)
+        .padding(.vertical, 8)
+        .padding(.horizontal, 8)
+        .background(
+            RoundedRectangle(cornerRadius: 8)
+                .fill(isActive ? Color.accentColor.opacity(0.12) : Color.clear)
+        )
         .task { installed = modelStore.installedModels().contains(model) }
         .alert("Modell löschen?", isPresented: $deleteConfirm) {
             Button("Abbrechen", role: .cancel) { }
@@ -76,7 +82,9 @@ struct WhisperModelRow: View {
     private var trailingControl: some View {
         if installed {
             HStack(spacing: 8) {
-                if !isActive {
+                if isActive {
+                    activeBadge
+                } else {
                     Button("Aktivieren") { onActivate() }
                         .buttonStyle(.borderedProminent)
                         .controlSize(.small)
@@ -99,6 +107,19 @@ struct WhisperModelRow: View {
                 .buttonStyle(.bordered)
                 .controlSize(.small)
         }
+    }
+
+    private var activeBadge: some View {
+        HStack(spacing: 4) {
+            Image(systemName: "checkmark.circle.fill")
+            Text("AKTIV")
+                .font(.caption.weight(.bold))
+                .tracking(0.5)
+        }
+        .foregroundStyle(.white)
+        .padding(.horizontal, 10)
+        .padding(.vertical, 4)
+        .background(Color.green, in: Capsule())
     }
 
     @ViewBuilder

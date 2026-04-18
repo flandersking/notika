@@ -7,6 +7,7 @@ struct TranscriptionTab: View {
     @State private var settings = SettingsStore()
     @State private var modelStore = WhisperModelStore()
     @State private var installed: [WhisperModelID] = []
+    @State private var currentChoice: STTEngineChoice = .apple
 
     var body: some View {
         Form {
@@ -20,7 +21,7 @@ struct TranscriptionTab: View {
                         onActivate: { activate(.whisper(model)) },
                         onChange: {
                             reloadInstalled()
-                            if installed.contains(model), settings.sttEngineChoice == .apple {
+                            if installed.contains(model), case .apple = currentChoice {
                                 AppDelegate.shared?.showWhisperDownloadConfirmSheet(for: model) { activate in
                                     if activate {
                                         self.activate(.whisper(model))
@@ -56,7 +57,14 @@ struct TranscriptionTab: View {
             }
         }
         .formStyle(.grouped)
-        .task { reloadInstalled() }
+        .task {
+            reloadInstalled()
+            currentChoice = settings.sttEngineChoice
+            // Falls aktives Whisper-Modell nicht installiert ist: auf Apple zurück
+            if case .whisper(let m) = currentChoice, !installed.contains(m) {
+                activate(.apple)
+            }
+        }
     }
 
     private var sizeOnDisk: String {
@@ -91,6 +99,7 @@ struct TranscriptionTab: View {
                 .font(.title3)
             VStack(alignment: .leading, spacing: 2) {
                 Text("Apple SpeechAnalyzer")
+                    .font(.body.weight(isActiveApple ? .semibold : .regular))
                     .foregroundStyle(.primary)
                 Text("System · 0 MB · immer verfügbar")
                     .font(.caption)
@@ -98,30 +107,47 @@ struct TranscriptionTab: View {
             }
             Spacer()
             if isActiveApple {
-                Label("aktiv", systemImage: "checkmark.circle.fill")
-                    .foregroundStyle(.green)
-                    .font(.caption)
+                activeBadge
             } else {
                 Button("Aktivieren") { activate(.apple) }
                     .buttonStyle(.borderedProminent)
                     .controlSize(.small)
             }
         }
+        .padding(.vertical, 8)
+        .padding(.horizontal, 8)
+        .background(
+            RoundedRectangle(cornerRadius: 8)
+                .fill(isActiveApple ? Color.accentColor.opacity(0.12) : Color.clear)
+        )
+    }
+
+    private var activeBadge: some View {
+        HStack(spacing: 4) {
+            Image(systemName: "checkmark.circle.fill")
+            Text("AKTIV")
+                .font(.caption.weight(.bold))
+                .tracking(0.5)
+        }
+        .foregroundStyle(.white)
+        .padding(.horizontal, 10)
         .padding(.vertical, 4)
+        .background(Color.green, in: Capsule())
     }
 
     private var isActiveApple: Bool {
-        if case .apple = settings.sttEngineChoice { return true }
+        if case .apple = currentChoice { return true }
         return false
     }
 
     private func isActive(_ model: WhisperModelID) -> Bool {
-        if case .whisper(let m) = settings.sttEngineChoice, m == model { return true }
+        if case .whisper(let m) = currentChoice, m == model { return true }
         return false
     }
 
     private func activate(_ choice: STTEngineChoice) {
         settings.sttEngineChoice = choice
+        currentChoice = choice
     }
 
     private func reloadInstalled() {
