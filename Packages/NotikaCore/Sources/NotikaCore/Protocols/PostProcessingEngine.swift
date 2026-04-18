@@ -1,8 +1,12 @@
 import Foundation
 
 public enum PostProcessingEngineID: String, Codable, Sendable, CaseIterable {
+    case none
     case appleFoundationModels
     case anthropic
+    case openAI
+    case google
+    case ollama
 }
 
 public protocol PostProcessingEngine: AnyObject, Sendable {
@@ -12,5 +16,5 @@ public protocol PostProcessingEngine: AnyObject, Sendable {
         transcript: String,
         mode: DictationMode,
         language: Language
-    ) async throws -> String
+    ) async throws -> ProcessedText
 }

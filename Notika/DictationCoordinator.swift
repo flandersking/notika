@@ -33,16 +33,9 @@ final class DictationCoordinator {
 
     /// Liefert die zur aktuellen Settings-Wahl passende Post-Processing-Engine.
     /// `nil` = kein LLM, Rohtranskript unverändert zurückgeben.
-    private func makePostProcessingEngine() -> PostProcessingEngine? {
-        switch settings.llmChoice {
-        case .none:
-            return nil
-        case .appleFoundationModels:
-            return PostProcessingEngineFactory.makeEngine(.appleFoundationModels)
-        case .anthropic:
-            // Phase 1b — bis dahin fallback auf nil
-            return nil
-        }
+    private func makePostProcessingEngine(for mode: DictationMode) -> PostProcessingEngine? {
+        let choice = settings.effectiveChoice(for: mode)
+        return PostProcessingEngineFactory.makeEngine(for: choice)
     }
 
     func start() {
@@ -156,13 +149,14 @@ final class DictationCoordinator {
                     self.logger.info("Transkript roh: \(transcript.text, privacy: .public)")
 
                     let processed: String
-                    if let engine = self.makePostProcessingEngine() {
+                    if let engine = self.makePostProcessingEngine(for: mode) {
                         self.overlay.updateState(.processing(mode: mode))
-                        processed = try await engine.process(
+                        let result = try await engine.process(
                             transcript: transcript.text,
                             mode: mode,
                             language: .german
                         )
+                        processed = result.text
                         self.logger.info("Transkript final (LLM): \(processed, privacy: .public)")
                     } else {
                         processed = transcript.text

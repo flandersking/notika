@@ -19,12 +19,14 @@ public final class FoundationModelsEngine: PostProcessingEngine {
         transcript: String,
         mode: DictationMode,
         language: Language
-    ) async throws -> String {
-        guard !transcript.isEmpty else { return transcript }
+    ) async throws -> ProcessedText {
+        guard !transcript.isEmpty else {
+            return ProcessedText(text: transcript, provider: .appleFoundationModels)
+        }
 
         guard model.isAvailable else {
-            logger.warning("SystemLanguageModel nicht verfügbar (Availability: \(String(describing: self.model.availability), privacy: .public)) — gebe Transkript unverändert zurück")
-            return transcript
+            logger.warning("SystemLanguageModel nicht verfügbar — gebe Transkript unverändert zurück")
+            return ProcessedText(text: transcript, provider: .appleFoundationModels)
         }
 
         let instructions = try loadInstructions(for: mode, language: language)
@@ -43,7 +45,15 @@ public final class FoundationModelsEngine: PostProcessingEngine {
         let cleaned = Self.stripPreambleAndQuotes(raw)
         logger.info("LLM-Output roh: \(raw, privacy: .public)")
         logger.info("LLM-Output final: \(cleaned, privacy: .public)")
-        return cleaned.isEmpty ? transcript : cleaned
+        let final = cleaned.isEmpty ? transcript : cleaned
+        return ProcessedText(
+            text: final,
+            costUSD: nil,
+            tokensIn: nil,
+            tokensOut: nil,
+            provider: .appleFoundationModels,
+            model: nil
+        )
     }
 
     // MARK: - Post-Filter

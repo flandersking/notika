@@ -4,14 +4,21 @@ import NotikaCore
 struct EnginesTab: View {
     @State private var settings = SettingsStore()
 
+    /// Vorerst nur die in Phase 1b-1 Task 1 funktional verfügbaren Choices.
+    /// Die volle Picker-UI mit allen Providern + Modellen folgt in späterem Task.
+    private let availableChoices: [LLMChoice] = [
+        .none,
+        .appleFoundationModels
+    ]
+
     var body: some View {
         Form {
             Section {
                 Picker("Nachbearbeitung", selection: Binding(
-                    get: { settings.llmChoice },
-                    set: { settings.llmChoice = $0 }
+                    get: { settings.globalLLMChoice },
+                    set: { settings.globalLLMChoice = $0 }
                 )) {
-                    ForEach(LLMChoice.allCases) { choice in
+                    ForEach(availableChoices, id: \.self) { choice in
                         Text(choice.displayName)
                             .tag(choice)
                     }
@@ -43,7 +50,7 @@ struct EnginesTab: View {
         VStack(alignment: .leading, spacing: 6) {
             Text("• **Kein LLM — Rohtranskript:** Der Text geht 1:1 aus dem SpeechAnalyzer in die Zwischenablage. Schnellste Variante.")
             Text("• **Apple Foundation Models:** On-device, gratis, aber das 3B-Modell ist klein und neigt zu Halluzinationen. Empfohlen nur für einfache Aufgaben.")
-            Text("• **Claude BYOK (Phase 1b):** Eigener Anthropic-API-Key. Beste Qualität, schnelles Haiku 4.5 oder präziseres Sonnet 4.6. Kommt bald.")
+            Text("• **Claude / ChatGPT / Gemini / Ollama (Phase 1b-1):** Provider-Auswahl folgt im neuen Settings-Flow.")
         }
         .font(.footnote)
         .foregroundStyle(.secondary)

@@ -1,29 +1,6 @@
 import Foundation
 import Observation
 
-public enum LLMChoice: String, Codable, Sendable, CaseIterable, Identifiable {
-    case none
-    case appleFoundationModels
-    case anthropic // Phase 1b
-
-    public var id: String { rawValue }
-
-    public var displayName: String {
-        switch self {
-        case .none:                 return "Kein LLM — Rohtranskript"
-        case .appleFoundationModels: return "Apple Foundation Models (experimentell, 3B on-device)"
-        case .anthropic:            return "Anthropic Claude (BYOK) — folgt in Phase 1b"
-        }
-    }
-
-    public var isAvailable: Bool {
-        switch self {
-        case .none, .appleFoundationModels: return true
-        case .anthropic: return false // wird in Phase 1b true
-        }
-    }
-}
-
 @MainActor
 @Observable
 public final class SettingsStore {
@@ -31,25 +8,84 @@ public final class SettingsStore {
 
     public init(defaults: UserDefaults = .standard) {
         self.defaults = defaults
+        Self.migrateIfNeeded(defaults: defaults)
     }
 
-    public var llmChoice: LLMChoice {
+    // MARK: - Global LLM-Wahl
+
+    public var globalLLMChoice: LLMChoice {
         get {
-            guard let raw = defaults.string(forKey: "notika.settings.llmChoice"),
-                  let value = LLMChoice(rawValue: raw)
+            guard let data = defaults.data(forKey: "notika.settings.globalLLMChoice"),
+                  let value = try? JSONDecoder().decode(LLMChoice.self, from: data)
             else {
-                // Default: "Kein LLM" — wir wollen den User nicht zum schwachen 3B-Modell zwingen.
-                return .none
+                return .appleFoundationModels   // Phase-1b-1-Default (Wahl 6b)
             }
             return value
         }
         set {
-            defaults.set(newValue.rawValue, forKey: "notika.settings.llmChoice")
+            if let data = try? JSONEncoder().encode(newValue) {
+                defaults.set(data, forKey: "notika.settings.globalLLMChoice")
+            }
         }
     }
+
+    // MARK: - Pro-Modus-Override (leer = nutzt global)
+
+    public func override(for mode: DictationMode) -> LLMChoice? {
+        guard let data = defaults.data(forKey: overrideKey(for: mode)),
+              let value = try? JSONDecoder().decode(LLMChoice.self, from: data)
+        else { return nil }
+        return value
+    }
+
+    public func setOverride(_ choice: LLMChoice?, for mode: DictationMode) {
+        let key = overrideKey(for: mode)
+        if let choice, let data = try? JSONEncoder().encode(choice) {
+            defaults.set(data, forKey: key)
+        } else {
+            defaults.removeObject(forKey: key)
+        }
+    }
+
+    public func effectiveChoice(for mode: DictationMode) -> LLMChoice {
+        override(for: mode) ?? globalLLMChoice
+    }
+
+    private func overrideKey(for mode: DictationMode) -> String {
+        "notika.settings.modeOverride.\(mode.rawValue)"
+    }
+
+    // MARK: - Sprache
 
     public var defaultLanguage: String {
         get { defaults.string(forKey: "notika.settings.language") ?? "de" }
         set { defaults.set(newValue, forKey: "notika.settings.language") }
+    }
+
+    // MARK: - Migration vom Phase-1a-rawString-Format
+
+    private static func migrateIfNeeded(defaults: UserDefaults) {
+        let oldKey = "notika.settings.llmChoice"
+        let newKey = "notika.settings.globalLLMChoice"
+        guard defaults.data(forKey: newKey) == nil,
+              let oldRaw = defaults.string(forKey: oldKey)
+        else { return }
+
+        let migrated: LLMChoice
+        switch oldRaw {
+        case "appleFoundationModels":
+            migrated = .appleFoundationModels
+        case "none":
+            migrated = .none
+        case "anthropic":
+            // Phase-1a hatte keinen funktionalen Anthropic-Engine; sinnvoll auf Apple zurück.
+            migrated = .appleFoundationModels
+        default:
+            migrated = .appleFoundationModels
+        }
+        if let data = try? JSONEncoder().encode(migrated) {
+            defaults.set(data, forKey: newKey)
+        }
+        defaults.removeObject(forKey: oldKey)
     }
 }
