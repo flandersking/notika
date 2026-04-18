@@ -89,6 +89,7 @@ final class DictationCoordinator {
     // MARK: - Recording
 
     private func beginRecording(mode: DictationMode) {
+        maybeShowFirstUseHint(mode: mode)
         guard activeMode == nil else { return }
         activeMode = mode
         overlay.updateState(.recording(mode: mode))
@@ -200,4 +201,15 @@ final class DictationCoordinator {
         }
     }
 
+    // MARK: - First-Use-Hint
+
+    /// Zeigt einmalig den First-Use-Hint, wenn der Onboarding-Step geskippt wurde
+    /// und der User Mode 2 oder 3 nutzt.
+    private func maybeShowFirstUseHint(mode: DictationMode) {
+        let stepCompleted = UserDefaults.standard.bool(forKey: "notika.onboarding.llmStepCompleted")
+        let alreadyShown  = UserDefaults.standard.bool(forKey: "notika.hint.llmShown")
+        guard !stepCompleted, !alreadyShown, mode != .literal else { return }
+        UserDefaults.standard.set(true, forKey: "notika.hint.llmShown")
+        AppDelegate.shared?.showLLMHintSheet()
+    }
 }

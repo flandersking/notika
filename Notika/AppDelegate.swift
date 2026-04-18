@@ -11,6 +11,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     static private(set) weak var shared: AppDelegate?
 
     private var onboardingWindow: NSWindow?
+    private var llmHintWindow: NSWindow?
     private let coordinator = DictationCoordinator()
 
     func applicationDidFinishLaunching(_ notification: Notification) {
@@ -75,5 +76,58 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     func closeOnboarding() {
         onboardingWindow?.close()
         onboardingWindow = nil
+    }
+
+    // MARK: - LLM-Hint
+
+    /// Zeigt einmalig den First-Use-Hint, der den User darauf hinweist,
+    /// dass er einen Cloud-LLM oder Ollama in den Einstellungen aktivieren kann.
+    func showLLMHintSheet() {
+        if let existing = llmHintWindow {
+            existing.makeKeyAndOrderFront(nil)
+            NSApp.activate(ignoringOtherApps: true)
+            return
+        }
+
+        let hosting = NSHostingController(rootView: LLMHintSheet(
+            onOpenSettings: { [weak self] in
+                self?.closeLLMHintSheet()
+                self?.openSettingsWindow()
+            },
+            onLater: { [weak self] in
+                self?.closeLLMHintSheet()
+            }
+        ))
+
+        let window = NSWindow(contentViewController: hosting)
+        window.styleMask = [.titled, .closable, .fullSizeContentView]
+        window.titlebarAppearsTransparent = true
+        window.titleVisibility = .hidden
+        window.title = "Tipp"
+        window.setContentSize(NSSize(width: 420, height: 280))
+        window.center()
+        window.isReleasedWhenClosed = false
+        window.level = .floating
+        window.standardWindowButton(.zoomButton)?.isHidden = true
+        window.standardWindowButton(.miniaturizeButton)?.isHidden = true
+
+        self.llmHintWindow = window
+        window.makeKeyAndOrderFront(nil)
+        NSApp.activate(ignoringOtherApps: true)
+    }
+
+    private func closeLLMHintSheet() {
+        llmHintWindow?.close()
+        llmHintWindow = nil
+    }
+
+    private func openSettingsWindow() {
+        // macOS 14+ Settings-Scene-Selector
+        if #available(macOS 14, *) {
+            NSApp.sendAction(Selector(("showSettingsWindow:")), to: nil, from: nil)
+        } else {
+            NSApp.sendAction(Selector(("showPreferencesWindow:")), to: nil, from: nil)
+        }
+        NSApp.activate(ignoringOtherApps: true)
     }
 }
