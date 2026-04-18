@@ -4,7 +4,10 @@ import Foundation
 import os
 
 public enum TextInserterResult: Sendable {
-    /// Text wurde erfolgreich in die fokussierte App eingefügt (AX oder Paste).
+    /// Text wurde an die fokussierte App via ⌘V gesendet. Ob sie das Paste
+    /// tatsächlich konsumiert hat, können wir nicht zuverlässig prüfen — die
+    /// allermeisten Apps (Notes, TextEdit, iTerm2, VS Code, Browser-Felder, …)
+    /// reagieren auf den synthetischen Cmd+V-Event.
     case inserted
     /// Text liegt in der Zwischenablage, konnte aber nicht automatisch
     /// eingefügt werden — meistens fehlt die Bedienungshilfen-Berechtigung.
@@ -13,30 +16,44 @@ public enum TextInserterResult: Sendable {
 
 /// Fügt Text in die aktuell fokussierte App ein.
 ///
-/// Kaskade:
-/// 1. **Accessibility API** — schreibt den Text direkt ins fokussierte
-///    Text-Element der Vordergrund-App.
-/// 2. **Clipboard-Fallback** — legt den Text auf das NSPasteboard und
-///    simuliert ⌘V (wenn AX nicht verfügbar oder fehlschlägt).
+/// **Strategie (Phase 1b-1):** Universelles Pasteboard + ⌘V.
 ///
-/// Das Clipboard wird **immer** gesetzt (Sicherheitsnetz — der User kann
-/// den Text manuell einfügen, falls beide Wege scheitern).
+/// Die ursprüngliche Phase-1a-Kaskade (AX primär → Paste Fallback) hat in
+/// Apps mit eigener Render-Engine (z.B. iTerm2, VS Code, Electron-Apps)
+/// versagt: `AXUIElementSetAttributeValue` gibt dort `.success` zurück, ohne
+/// dass tatsächlich Text erscheint. Da Cmd+V universell von praktisch allen
+/// Text-aufnehmenden Apps verstanden wird, ist der AX-Direkt-Insert-Weg
+/// entfernt — der Aufwand „erkennen welche App AX zuverlässig unterstützt"
+/// lohnt sich nicht.
+///
+/// **Ablauf:**
+/// 1. User-Clipboard sichern (String-Inhalt).
+/// 2. Eigenen Text auf das NSPasteboard legen.
+/// 3. Synthetisches ⌘V via CGEvent (HID-Tap) an die fokussierte App senden.
+/// 4. Kurz warten, bis die Ziel-App das Paste verarbeitet hat.
+/// 5. User-Clipboard wiederherstellen.
+///
+/// Voraussetzung: Bedienungshilfen-Freigabe. Ohne sie filtert macOS
+/// synthetische Keyboard-Events — Result wird `.clipboardOnly`.
 @MainActor
 public final class TextInserter {
 
     public struct Options: Sendable {
         public var simulatePasteShortcut: Bool
-        public var preferAccessibilityAPI: Bool
         public var restoreClipboard: Bool
+        /// Wartezeit zwischen Cmd+V-Post und Clipboard-Restore. Muss lang genug
+        /// sein, damit die Ziel-App das Paste konsumiert hat — sonst paste-st
+        /// sie den restaurierten alten Inhalt.
+        public var pasteSettleMillis: Int
 
         public init(
             simulatePasteShortcut: Bool = true,
-            preferAccessibilityAPI: Bool = true,
-            restoreClipboard: Bool = false
+            restoreClipboard: Bool = true,
+            pasteSettleMillis: Int = 150
         ) {
             self.simulatePasteShortcut = simulatePasteShortcut
-            self.preferAccessibilityAPI = preferAccessibilityAPI
             self.restoreClipboard = restoreClipboard
+            self.pasteSettleMillis = pasteSettleMillis
         }
     }
 
@@ -52,100 +69,47 @@ public final class TextInserter {
     public func insert(_ text: String) async -> TextInserterResult {
         guard !text.isEmpty else { return .inserted }
 
-        // Clipboard immer setzen — Sicherheitsnetz.
+        // 1) User-Clipboard sichern (nur String, das ist für 99 % der Fälle ok).
         let previous = options.restoreClipboard
             ? NSPasteboard.general.string(forType: .string)
             : nil
+
+        // 2) Eigenen Text auf das Clipboard legen — Sicherheitsnetz, falls ⌘V
+        //    nicht funktioniert oder die App es nicht konsumiert.
         setClipboard(text)
 
-        // Ohne Bedienungshilfen-Freigabe können weder AX noch CGEvent-Paste
-        // wirklich wirken — macOS filtert synthetische Keyboard-Events.
+        // Ohne Bedienungshilfen-Freigabe filtert macOS synthetische
+        // Keyboard-Events. Dann bleibt nur das manuelle Paste durch den User.
         guard AXIsProcessTrusted() else {
             logger.info("Accessibility nicht trusted — nur Clipboard gesetzt")
             return .clipboardOnly(reason: "Bitte Bedienungshilfen für Notika freigeben (Systemeinstellungen → Privatsphäre & Sicherheit → Bedienungshilfen). Text liegt solange in der Zwischenablage.")
         }
 
-        var inserted = false
-        if options.preferAccessibilityAPI {
-            inserted = tryAccessibilityInsert(text)
+        // 3) Cmd+V senden (kann via Options abgeschaltet werden, z.B. für Tests).
+        guard options.simulatePasteShortcut else {
+            logger.info("simulatePasteShortcut=false — Text bleibt im Clipboard")
+            // Restore macht hier keinen Sinn (es wurde nicht gepasted).
+            return .clipboardOnly(reason: "Auto-Paste deaktiviert. Text liegt in der Zwischenablage.")
         }
 
-        if !inserted && options.simulatePasteShortcut {
-            inserted = simulateCommandV()
+        guard simulateCommandV() else {
+            logger.error("CGEvent Cmd+V konnte nicht erzeugt werden — nur Clipboard gesetzt")
+            return .clipboardOnly(reason: "Cmd+V konnte nicht simuliert werden. Text liegt in der Zwischenablage.")
         }
 
-        // Clipboard optional zurücksetzen (nach kurzer Verzögerung, damit
-        // ⌘V noch Zeit hatte, zu feuern).
+        logger.info("⌘V gepostet, chars=\(text.count)")
+
+        // 4 + 5) Warten und Clipboard restoren — im Hintergrund, damit die
+        //        Pipeline nicht blockiert.
         if let previous, options.restoreClipboard {
+            let settle = options.pasteSettleMillis
             Task { @MainActor in
-                try? await Task.sleep(for: .milliseconds(500))
+                try? await Task.sleep(for: .milliseconds(settle))
                 self.setClipboard(previous)
             }
         }
 
-        logger.info("insert(...) → inserted=\(inserted, privacy: .public), chars=\(text.count)")
-        return inserted
-            ? .inserted
-            : .clipboardOnly(reason: "Weder AX- noch Paste-Einfügen hat funktioniert. Text liegt in der Zwischenablage.")
-    }
-
-    // MARK: - Accessibility API
-
-    private func tryAccessibilityInsert(_ text: String) -> Bool {
-        guard AXIsProcessTrusted() else {
-            logger.info("Accessibility nicht trusted — fallback auf Paste")
-            return false
-        }
-
-        let systemWide = AXUIElementCreateSystemWide()
-        var focusedRef: CFTypeRef?
-        let err = AXUIElementCopyAttributeValue(
-            systemWide,
-            kAXFocusedUIElementAttribute as CFString,
-            &focusedRef
-        )
-        guard err == .success, let element = focusedRef else {
-            logger.info("Kein fokussiertes AX-Element (Status: \(err.rawValue, privacy: .public))")
-            return false
-        }
-
-        // Narrowing zu AXUIElement ohne Force-Cast.
-        let focused = element as! AXUIElement
-
-        // 1) Versuche, ausgewählten Text zu ersetzen (gängigste Variante).
-        let setSelected = AXUIElementSetAttributeValue(
-            focused,
-            kAXSelectedTextAttribute as CFString,
-            text as CFTypeRef
-        )
-        if setSelected == .success {
-            logger.info("AX kAXSelectedTextAttribute gesetzt")
-            return true
-        }
-
-        // 2) Fallback: gesamten Wert überschreiben — nur sinnvoll bei leeren
-        //    oder kurzen Feldern.
-        var currentValueRef: CFTypeRef?
-        let getValue = AXUIElementCopyAttributeValue(
-            focused,
-            kAXValueAttribute as CFString,
-            &currentValueRef
-        )
-        if getValue == .success, let current = currentValueRef as? String {
-            let combined = current + text
-            let setValue = AXUIElementSetAttributeValue(
-                focused,
-                kAXValueAttribute as CFString,
-                combined as CFTypeRef
-            )
-            if setValue == .success {
-                logger.info("AX kAXValueAttribute überschrieben")
-                return true
-            }
-        }
-
-        logger.info("AX-Insert nicht erfolgreich (selected=\(setSelected.rawValue, privacy: .public)) — fallback")
-        return false
+        return .inserted
     }
 
     // MARK: - Paste-Simulation
@@ -159,14 +123,21 @@ public final class TextInserter {
         // V-Taste (kVK_ANSI_V = 9)
         let vKeyCode: CGKeyCode = 9
 
-        let keyDown = CGEvent(keyboardEventSource: source, virtualKey: vKeyCode, keyDown: true)
-        let keyUp = CGEvent(keyboardEventSource: source, virtualKey: vKeyCode, keyDown: false)
-        keyDown?.flags = .maskCommand
-        keyUp?.flags = .maskCommand
+        guard
+            let keyDown = CGEvent(keyboardEventSource: source, virtualKey: vKeyCode, keyDown: true),
+            let keyUp = CGEvent(keyboardEventSource: source, virtualKey: vKeyCode, keyDown: false)
+        else {
+            return false
+        }
+        keyDown.flags = .maskCommand
+        keyUp.flags = .maskCommand
 
-        keyDown?.post(tap: .cgAnnotatedSessionEventTap)
-        keyUp?.post(tap: .cgAnnotatedSessionEventTap)
-        return keyDown != nil && keyUp != nil
+        // .cghidEventTap ist der „echte" HID-Layer-Tap — wirkt für praktisch
+        // alle Apps inkl. iTerm2/Terminal. .cgAnnotatedSessionEventTap (vorher
+        // genutzt) wird von einigen Apps ignoriert.
+        keyDown.post(tap: .cghidEventTap)
+        keyUp.post(tap: .cghidEventTap)
+        return true
     }
 
     // MARK: - Pasteboard
