@@ -33,7 +33,7 @@ struct TranscriptionTab: View {
             } header: {
                 Text("Wer hört zu und schreibt deine Worte mit?")
             } footer: {
-                Text("Nutze „Aktivieren" beim jeweiligen Modell, um es einzuschalten. Apple ist immer verfügbar; Whisper-Modelle musst du erst laden.")
+                Text("Nutze den Aktivieren-Button beim jeweiligen Modell, um es einzuschalten. Apple ist immer verfügbar; Whisper-Modelle musst du erst laden.")
                     .font(.footnote)
                     .foregroundStyle(.secondary)
             }
