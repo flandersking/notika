@@ -33,6 +33,11 @@ final class DictationCoordinator {
     /// Zustand, um im Toggle-Modus zu wissen, ob wir gerade aufnehmen.
     private var activeMode: DictationMode?
 
+    /// Cache für die STT-Engine, damit WhisperKit nicht bei jedem Diktat
+    /// das Modell neu laden muss (spart 2-5s pro Pipeline).
+    private var cachedEngineChoice: STTEngineChoice?
+    private var cachedEngine: TranscriptionEngine?
+
     init() {
         self.transcriptionEngine = TranscriptionEngineFactory.makeEngine(.appleSpeechAnalyzer)
     }
@@ -47,14 +52,30 @@ final class DictationCoordinator {
     /// Wählt die TranscriptionEngine für das nächste Diktat basierend auf den Settings.
     /// Bei `.whisper(modelID)` mit fehlendem Modell: Fallback auf Apple + Pill-Hinweis.
     private func resolveTranscriptionEngine() -> TranscriptionEngine {
-        switch settings.sttEngineChoice {
+        let choice = settings.sttEngineChoice
+        if let cachedChoice = cachedEngineChoice,
+           let cached = cachedEngine,
+           cachedChoice == choice {
+            return cached
+        }
+        switch choice {
         case .apple:
-            return TranscriptionEngineFactory.makeEngine(.appleSpeechAnalyzer)
+            let engine = TranscriptionEngineFactory.makeEngine(.appleSpeechAnalyzer)
+            cachedEngineChoice = .apple
+            cachedEngine = engine
+            logger.info("STT-Engine erzeugt (cached): Apple")
+            return engine
         case .whisper(let modelID):
             if whisperModelStore.installedModels().contains(modelID) {
-                return WhisperKitEngine(modelID: modelID, modelStore: whisperModelStore)
+                let engine = WhisperKitEngine(modelID: modelID, modelStore: whisperModelStore)
+                cachedEngineChoice = choice
+                cachedEngine = engine
+                logger.info("STT-Engine erzeugt (cached): Whisper \(modelID.rawValue, privacy: .public)")
+                return engine
             }
             logger.warning("Whisper-Modell \(modelID.rawValue, privacy: .public) nicht installiert — Fallback auf Apple")
+            // Fallback-Engine bewusst NICHT cachen: sobald das Modell
+            // installiert wird, soll der nächste Diktatversuch Whisper nutzen.
             return TranscriptionEngineFactory.makeEngine(.appleSpeechAnalyzer)
         }
     }
