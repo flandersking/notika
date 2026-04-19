@@ -203,7 +203,8 @@ final class DictationCoordinator {
                 }
 
                 let tSTT = Date()
-                self.logger.notice("⏱️ STT: \(String(format: "%.2f", tSTT.timeIntervalSince(tStart)))s")
+                let sttSec = String(format: "%.2f", tSTT.timeIntervalSince(tStart))
+                self.logger.notice("⏱️ STT: \(sttSec, privacy: .public)s")
 
                 if transcript.text.isEmpty {
                     self.logger.warning("Leeres Transkript für \(audioURL.path, privacy: .public)")
@@ -241,12 +242,15 @@ final class DictationCoordinator {
                     }
 
                     let tLLM = Date()
-                    self.logger.notice("⏱️ LLM: \(String(format: "%.2f", tLLM.timeIntervalSince(tSTT)))s")
+                    let llmSec = String(format: "%.2f", tLLM.timeIntervalSince(tSTT))
+                    self.logger.notice("⏱️ LLM: \(llmSec, privacy: .public)s")
 
                     self.overlay.updateState(.inserting(mode: mode))
                     let result = await self.textInserter.insert(processed)
                     let tInsert = Date()
-                    self.logger.notice("⏱️ Insert: \(String(format: "%.2f", tInsert.timeIntervalSince(tLLM)))s · Total: \(String(format: "%.2f", tInsert.timeIntervalSince(tStart)))s")
+                    let insertSec = String(format: "%.2f", tInsert.timeIntervalSince(tLLM))
+                    let totalSec = String(format: "%.2f", tInsert.timeIntervalSince(tStart))
+                    self.logger.notice("⏱️ Insert: \(insertSec, privacy: .public)s · Total: \(totalSec, privacy: .public)s")
                     switch result {
                     case .inserted:
                         if !processed.isEmpty {
