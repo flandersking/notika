@@ -6,9 +6,23 @@ import Observation
 public final class SettingsStore {
     private let defaults: UserDefaults
 
+    // Stored Properties (observable von SwiftUI). UserDefaults-Persist in didSet.
+    public var hotkeyConfigLiteral: ModeHotkeyConfig {
+        didSet { saveHotkeyConfig(hotkeyConfigLiteral, key: "notika.hotkey.config.literal") }
+    }
+    public var hotkeyConfigSocial: ModeHotkeyConfig {
+        didSet { saveHotkeyConfig(hotkeyConfigSocial, key: "notika.hotkey.config.social") }
+    }
+    public var hotkeyConfigFormal: ModeHotkeyConfig {
+        didSet { saveHotkeyConfig(hotkeyConfigFormal, key: "notika.hotkey.config.formal") }
+    }
+
     public init(defaults: UserDefaults = .standard) {
         self.defaults = defaults
         Self.migrateIfNeeded(defaults: defaults)
+        self.hotkeyConfigLiteral = Self.loadHotkeyConfigStatic(defaults: defaults, key: "notika.hotkey.config.literal")
+        self.hotkeyConfigSocial  = Self.loadHotkeyConfigStatic(defaults: defaults, key: "notika.hotkey.config.social")
+        self.hotkeyConfigFormal  = Self.loadHotkeyConfigStatic(defaults: defaults, key: "notika.hotkey.config.formal")
     }
 
     // MARK: - Global LLM-Wahl
@@ -49,21 +63,6 @@ public final class SettingsStore {
 
     // MARK: - Hotkey-Config pro Modus (Phase 1b-6)
 
-    public var hotkeyConfigLiteral: ModeHotkeyConfig {
-        get { loadHotkeyConfig(key: "notika.hotkey.config.literal") }
-        set { saveHotkeyConfig(newValue, key: "notika.hotkey.config.literal") }
-    }
-
-    public var hotkeyConfigSocial: ModeHotkeyConfig {
-        get { loadHotkeyConfig(key: "notika.hotkey.config.social") }
-        set { saveHotkeyConfig(newValue, key: "notika.hotkey.config.social") }
-    }
-
-    public var hotkeyConfigFormal: ModeHotkeyConfig {
-        get { loadHotkeyConfig(key: "notika.hotkey.config.formal") }
-        set { saveHotkeyConfig(newValue, key: "notika.hotkey.config.formal") }
-    }
-
     public func hotkeyConfig(for mode: DictationMode) -> ModeHotkeyConfig {
         switch mode {
         case .literal: return hotkeyConfigLiteral
@@ -80,7 +79,7 @@ public final class SettingsStore {
         }
     }
 
-    private func loadHotkeyConfig(key: String) -> ModeHotkeyConfig {
+    private static func loadHotkeyConfigStatic(defaults: UserDefaults, key: String) -> ModeHotkeyConfig {
         guard let data = defaults.data(forKey: key),
               let config = try? JSONDecoder().decode(ModeHotkeyConfig.self, from: data) else {
             return ModeHotkeyConfig()
