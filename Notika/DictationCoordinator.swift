@@ -98,6 +98,17 @@ final class DictationCoordinator {
         logger.info("DictationCoordinator gestartet")
     }
 
+    /// Wärmt die aktuell konfigurierte STT-Engine vor, damit das erste
+    /// Diktat nach App-Start keinen Cold-Start-Delay hat.
+    /// Safe, um im Hintergrund aufgerufen zu werden (Task.detached).
+    func preWarm() async {
+        let engine = resolveTranscriptionEngine()
+        let started = Date()
+        await engine.preWarm()
+        let elapsed = Date().timeIntervalSince(started)
+        logger.info("⏱️ Pre-Warm: \(String(format: "%.2f", elapsed))s")
+    }
+
     /// Liest die aktuellen Hotkey-Configs aus dem SettingsStore und wendet
     /// sie auf den HotkeyManager an. Wird beim Start + bei UI-Änderungen aufgerufen.
     func refreshHotkeyConfigs() {

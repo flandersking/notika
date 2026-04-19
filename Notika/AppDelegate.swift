@@ -26,6 +26,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         // Hotkey- und Audio-Orchestrierung starten.
         coordinator.start()
 
+        // Whisper-Modell im Hintergrund vorwärmen, damit das erste Diktat
+        // keinen Cold-Start-Delay hat. Läuft mit niedriger Priorität.
+        Task.detached(priority: .utility) { [coordinator] in
+            await coordinator.preWarm()
+        }
+
         let hasCompleted = UserDefaults.standard.bool(forKey: "notika.hasCompletedOnboarding")
 
         // Zeige das Onboarding automatisch beim ersten Start oder wenn TCC nach
