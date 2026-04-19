@@ -90,9 +90,10 @@ struct HotkeysTab: View {
                 Text("Kurzbefehle pro Modus")
             } footer: {
                 VStack(alignment: .leading, spacing: 4) {
-                    Text("**Halten** = drücken und sprechen, loslassen stoppt.")
-                    Text("**Antippen** = einmal drücken zum Start, nochmal zum Beenden.")
-                    Text("Tastenkombi und Modifier-Trigger sind beide aktiv — setze den Modifier-Trigger auf \"Keiner\", um nur die Tastenkombi zu nutzen.")
+                    Text("**Tastenkombi**: klassische Shortcuts wie ⌘⌥1, F5 etc.")
+                    Text("**Einzeltaste**: reine Modifier (Fn / rechte ⌘ / rechte ⌥) — die Library für Tastenkombis unterstützt diese nicht, deshalb eine eigene Auswahl.")
+                    Text("**Auslöser**: _Halten_ = drücken und sprechen, loslassen stoppt. _Antippen_ = einmal drücken zum Start, nochmal zum Beenden.")
+                    Text("Beide Auslöse-Wege sind parallel aktiv — setze Einzeltaste auf \"Keiner\", wenn du nur die Tastenkombi nutzen willst.")
                 }
                 .font(.footnote)
                 .foregroundStyle(.secondary)
@@ -119,7 +120,7 @@ struct HotkeysTab: View {
                 }
 
                 VStack(alignment: .leading, spacing: 2) {
-                    Text("Modifier-Trigger").font(.caption2).foregroundStyle(.secondary)
+                    Text("Einzeltaste").font(.caption2).foregroundStyle(.secondary)
                     Picker("", selection: modifierBinding(for: mode)) {
                         ForEach(ModifierTrigger.allCases) { trigger in
                             Text(trigger.displayName).tag(trigger)

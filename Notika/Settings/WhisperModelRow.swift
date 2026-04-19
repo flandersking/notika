@@ -16,9 +16,11 @@ struct WhisperModelRow: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack(spacing: 12) {
-                Image(systemName: radioIcon)
-                    .foregroundStyle(radioColor)
-                    .font(.title3)
+                if !installed {
+                    Image(systemName: "arrow.down.circle.dotted")
+                        .foregroundStyle(.secondary)
+                        .font(.title3)
+                }
                 VStack(alignment: .leading, spacing: 2) {
                     Text(model.displayName)
                         .font(.body.weight(isActive ? .semibold : .regular))
@@ -51,17 +53,6 @@ struct WhisperModelRow: View {
         } message: {
             Text("\(model.displayName) wird vom Datenträger entfernt.")
         }
-    }
-
-    private var radioIcon: String {
-        if isActive { return "largecircle.fill.circle" }
-        if installed { return "circle" }
-        return "arrow.down.circle.dotted"
-    }
-
-    private var radioColor: Color {
-        if isActive { return .accentColor }
-        return .secondary
     }
 
     private var subtitle: String {

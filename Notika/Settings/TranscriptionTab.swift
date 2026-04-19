@@ -94,9 +94,6 @@ struct TranscriptionTab: View {
     @ViewBuilder
     private var appleRow: some View {
         HStack(spacing: 12) {
-            Image(systemName: isActiveApple ? "largecircle.fill.circle" : "circle")
-                .foregroundStyle(isActiveApple ? Color.accentColor : .secondary)
-                .font(.title3)
             VStack(alignment: .leading, spacing: 2) {
                 Text("Apple SpeechAnalyzer")
                     .font(.body.weight(isActiveApple ? .semibold : .regular))
