@@ -92,8 +92,7 @@ struct HotkeysTab: View {
                 VStack(alignment: .leading, spacing: 4) {
                     Text("**Tastenkombi**: klassische Shortcuts wie ⌘⌥1, F5 etc.")
                     Text("**Einzeltaste**: reine Modifier (Fn / rechte ⌘ / rechte ⌥) — die Library für Tastenkombis unterstützt diese nicht, deshalb eine eigene Auswahl.")
-                    Text("**Auslöser**: _Halten_ = drücken und sprechen, loslassen stoppt. _Antippen_ = einmal drücken zum Start, nochmal zum Beenden.")
-                    Text("Beide Auslöse-Wege sind parallel aktiv — setze Einzeltaste auf \"Keiner\", wenn du nur die Tastenkombi nutzen willst.")
+                    Text("Beide werden zum Sprechen **gehalten** — loslassen stoppt die Aufnahme. Beide Auswahlen sind parallel aktiv; setze Einzeltaste auf \"Keiner\", wenn du nur die Tastenkombi nutzen willst.")
                 }
                 .font(.footnote)
                 .foregroundStyle(.secondary)
@@ -129,17 +128,6 @@ struct HotkeysTab: View {
                     .labelsHidden()
                     .frame(width: 180)
                 }
-
-                VStack(alignment: .leading, spacing: 2) {
-                    Text("Auslöser").font(.caption2).foregroundStyle(.secondary)
-                    Picker("", selection: triggerModeBinding(for: mode)) {
-                        ForEach(TriggerMode.allCases) { tm in
-                            Text(tm.displayName).tag(tm)
-                        }
-                    }
-                    .labelsHidden()
-                    .frame(width: 200)
-                }
             }
         }
         .padding(.vertical, 4)
@@ -157,17 +145,6 @@ struct HotkeysTab: View {
         )
     }
 
-    private func triggerModeBinding(for mode: DictationMode) -> Binding<TriggerMode> {
-        Binding(
-            get: { settings.hotkeyConfig(for: mode).triggerMode },
-            set: { newValue in
-                var config = settings.hotkeyConfig(for: mode)
-                config.triggerMode = newValue
-                settings.setHotkeyConfig(config, for: mode)
-                NotificationCenter.default.post(name: .notikaHotkeyConfigChanged, object: nil)
-            }
-        )
-    }
 }
 
 // EnginesTab lebt jetzt in `EnginesTab.swift`.
