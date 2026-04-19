@@ -1,6 +1,8 @@
 import SwiftUI
 import KeyboardShortcuts
+import NotikaCore
 import NotikaMacOS
+import ApplicationServices
 
 struct SettingsView: View {
     var body: some View {
@@ -27,7 +29,7 @@ struct SettingsView: View {
                 AboutTab()
             }
         }
-        .frame(minWidth: 620, minHeight: 440)
+        .frame(minWidth: 720, minHeight: 440)
     }
 }
 
@@ -43,32 +45,127 @@ struct GeneralTab: View {
     }
 }
 
+/// Benachrichtigungs-Name, den der HotkeysTab postet, wenn sich eine Modifier-/Trigger-
+/// Konfiguration ändert. Der DictationCoordinator hört darauf und verdrahtet den
+/// ModifierHotkeyTap live neu.
+extension Notification.Name {
+    static let notikaHotkeyConfigChanged = Notification.Name("notika.hotkey.config.changed")
+}
+
 struct HotkeysTab: View {
+    @State private var settings = SettingsStore()
+    @State private var accessibilityGranted = AXIsProcessTrusted()
+
     var body: some View {
         Form {
+            if !accessibilityGranted {
+                Section {
+                    HStack(alignment: .top, spacing: 8) {
+                        Image(systemName: "exclamationmark.triangle.fill")
+                            .foregroundStyle(.orange)
+                        VStack(alignment: .leading, spacing: 6) {
+                            Text("Bedienungshilfen nicht aktiv")
+                                .font(.headline)
+                            Text("Damit Modifier-Trigger (Fn / Rechte ⌘ / Rechte ⌥) funktionieren, musst du Notika in den Systemeinstellungen unter **Datenschutz & Sicherheit → Bedienungshilfen** aktivieren. Die klassischen Tastenkombis funktionieren auch ohne.")
+                                .font(.caption)
+                            Button("Systemeinstellungen öffnen") {
+                                if let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility") {
+                                    NSWorkspace.shared.open(url)
+                                }
+                            }
+                            .buttonStyle(.borderless)
+                        }
+                    }
+                    .padding(.vertical, 4)
+                }
+            }
+
             Section {
-                KeyboardShortcuts.Recorder("Modus 1 — Literal", name: .modeLiteral)
-                KeyboardShortcuts.Recorder("Modus 2 — Social", name: .modeSocial)
-                KeyboardShortcuts.Recorder("Modus 3 — Formell", name: .modeFormal)
+                hotkeyRow(for: .literal, label: "📝 Literal")
+                Divider()
+                hotkeyRow(for: .social, label: "💬 Social")
+                Divider()
+                hotkeyRow(for: .formal, label: "✉️ Formal")
             } header: {
-                Text("Kurzbefehle")
+                Text("Kurzbefehle pro Modus")
             } footer: {
                 VStack(alignment: .leading, spacing: 4) {
-                    Text("Klicke in das Feld und drücke die gewünschte Taste oder Kombination. Klicke das ✕-Symbol, um den Kurzbefehl zu entfernen.")
-                    Text("Tipp: Eine einzelne Funktionstaste reicht aus — drücke z. B. einfach F5, F6 oder F7 (ohne ⌘/⌥/⌃). Buchstaben oder Ziffern müssen aus technischen Gründen mit einem Modifier (⌘/⌥/⌃) kombiniert werden, damit sie nicht das normale Tippen blockieren.")
+                    Text("**Halten** = drücken und sprechen, loslassen stoppt.")
+                    Text("**Antippen** = einmal drücken zum Start, nochmal zum Beenden.")
+                    Text("Tastenkombi und Modifier-Trigger sind beide aktiv — setze den Modifier-Trigger auf \"Keiner\", um nur die Tastenkombi zu nutzen.")
                 }
                 .font(.footnote)
                 .foregroundStyle(.secondary)
             }
-
-            Section {
-                Text("Aktuell: Push-to-Talk (Taste halten). Umschaltung auf Toggle folgt in Phase 1b.")
-                    .foregroundStyle(.secondary)
-            } header: {
-                Text("Auslöseverhalten")
-            }
         }
         .formStyle(.grouped)
+        .onAppear {
+            accessibilityGranted = AXIsProcessTrusted()
+        }
+    }
+
+    @ViewBuilder
+    private func hotkeyRow(for mode: DictationMode, label: String) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text(label)
+                .font(.subheadline)
+                .fontWeight(.semibold)
+
+            HStack(alignment: .firstTextBaseline, spacing: 16) {
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("Tastenkombi").font(.caption2).foregroundStyle(.secondary)
+                    KeyboardShortcuts.Recorder(for: HotkeyBinding.name(for: mode))
+                        .frame(width: 180)
+                }
+
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("Modifier-Trigger").font(.caption2).foregroundStyle(.secondary)
+                    Picker("", selection: modifierBinding(for: mode)) {
+                        ForEach(ModifierTrigger.allCases) { trigger in
+                            Text(trigger.displayName).tag(trigger)
+                        }
+                    }
+                    .labelsHidden()
+                    .frame(width: 180)
+                }
+
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("Auslöser").font(.caption2).foregroundStyle(.secondary)
+                    Picker("", selection: triggerModeBinding(for: mode)) {
+                        ForEach(TriggerMode.allCases) { tm in
+                            Text(tm.displayName).tag(tm)
+                        }
+                    }
+                    .labelsHidden()
+                    .frame(width: 200)
+                }
+            }
+        }
+        .padding(.vertical, 4)
+    }
+
+    private func modifierBinding(for mode: DictationMode) -> Binding<ModifierTrigger> {
+        Binding(
+            get: { settings.hotkeyConfig(for: mode).modifierTrigger },
+            set: { newValue in
+                var config = settings.hotkeyConfig(for: mode)
+                config.modifierTrigger = newValue
+                settings.setHotkeyConfig(config, for: mode)
+                NotificationCenter.default.post(name: .notikaHotkeyConfigChanged, object: nil)
+            }
+        )
+    }
+
+    private func triggerModeBinding(for mode: DictationMode) -> Binding<TriggerMode> {
+        Binding(
+            get: { settings.hotkeyConfig(for: mode).triggerMode },
+            set: { newValue in
+                var config = settings.hotkeyConfig(for: mode)
+                config.triggerMode = newValue
+                settings.setHotkeyConfig(config, for: mode)
+                NotificationCenter.default.post(name: .notikaHotkeyConfigChanged, object: nil)
+            }
+        )
     }
 }
 
