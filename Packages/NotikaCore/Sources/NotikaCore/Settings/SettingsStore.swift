@@ -47,6 +47,52 @@ public final class SettingsStore {
         }
     }
 
+    // MARK: - Hotkey-Config pro Modus (Phase 1b-6)
+
+    public var hotkeyConfigLiteral: ModeHotkeyConfig {
+        get { loadHotkeyConfig(key: "notika.hotkey.config.literal") }
+        set { saveHotkeyConfig(newValue, key: "notika.hotkey.config.literal") }
+    }
+
+    public var hotkeyConfigSocial: ModeHotkeyConfig {
+        get { loadHotkeyConfig(key: "notika.hotkey.config.social") }
+        set { saveHotkeyConfig(newValue, key: "notika.hotkey.config.social") }
+    }
+
+    public var hotkeyConfigFormal: ModeHotkeyConfig {
+        get { loadHotkeyConfig(key: "notika.hotkey.config.formal") }
+        set { saveHotkeyConfig(newValue, key: "notika.hotkey.config.formal") }
+    }
+
+    public func hotkeyConfig(for mode: DictationMode) -> ModeHotkeyConfig {
+        switch mode {
+        case .literal: return hotkeyConfigLiteral
+        case .social:  return hotkeyConfigSocial
+        case .formal:  return hotkeyConfigFormal
+        }
+    }
+
+    public func setHotkeyConfig(_ config: ModeHotkeyConfig, for mode: DictationMode) {
+        switch mode {
+        case .literal: hotkeyConfigLiteral = config
+        case .social:  hotkeyConfigSocial  = config
+        case .formal:  hotkeyConfigFormal  = config
+        }
+    }
+
+    private func loadHotkeyConfig(key: String) -> ModeHotkeyConfig {
+        guard let data = defaults.data(forKey: key),
+              let config = try? JSONDecoder().decode(ModeHotkeyConfig.self, from: data) else {
+            return ModeHotkeyConfig()
+        }
+        return config
+    }
+
+    private func saveHotkeyConfig(_ config: ModeHotkeyConfig, key: String) {
+        guard let data = try? JSONEncoder().encode(config) else { return }
+        defaults.set(data, forKey: key)
+    }
+
     // MARK: - Pro-Modus-Override (leer = nutzt global)
 
     public func override(for mode: DictationMode) -> LLMChoice? {
