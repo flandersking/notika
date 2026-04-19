@@ -16,6 +16,16 @@ public final class HotkeyManager {
     private let continuation: AsyncStream<HotkeyEvent>.Continuation
     public let events: AsyncStream<HotkeyEvent>
 
+    private lazy var modifierTap: ModifierHotkeyTap = {
+        ModifierHotkeyTap { [weak self] mode, event in
+            guard let self else { return }
+            switch event {
+            case .pressed:  self.continuation.yield(.pressed(mode))
+            case .released: self.continuation.yield(.released(mode))
+            }
+        }
+    }()
+
     public init() {
         var cont: AsyncStream<HotkeyEvent>.Continuation!
         self.events = AsyncStream { cont = $0 }
@@ -34,13 +44,34 @@ public final class HotkeyManager {
                 self?.continuation.yield(.released(mode))
             }
         }
-        logger.info("HotkeyManager gestartet")
+        logger.info("HotkeyManager gestartet (Pfad A aktiv)")
+    }
+
+    /// Konfiguriert den Modifier-Tap (Pfad B) mit den aktuellen Config-Werten und startet
+    /// oder stoppt ihn je nach Bedarf. Kann mehrfach aufgerufen werden.
+    public func applyModifierConfigs(_ configs: [DictationMode: ModeHotkeyConfig]) {
+        let anyActive = configs.values.contains { $0.modifierTrigger != .none }
+        modifierTap.configure(configs: configs)
+
+        if anyActive {
+            do {
+                try modifierTap.start()
+                logger.info("ModifierHotkeyTap (Pfad B) aktiv")
+            } catch ModifierHotkeyTap.StartError.accessibilityPermissionMissing {
+                logger.warning("Pfad B inaktiv: Accessibility-Permission fehlt")
+            } catch {
+                logger.error("Pfad B Start fehlgeschlagen: \(String(describing: error), privacy: .public)")
+            }
+        } else {
+            modifierTap.stop()
+        }
     }
 
     public func stop() {
         for mode in DictationMode.allCases {
             KeyboardShortcuts.disable(HotkeyBinding.name(for: mode))
         }
+        modifierTap.stop()
         continuation.finish()
     }
 }
