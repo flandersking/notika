@@ -8,9 +8,6 @@ import ApplicationServices
 struct SettingsView: View {
     var body: some View {
         TabView {
-            Tab("Allgemein", systemImage: "gearshape") {
-                GeneralTab()
-            }
             Tab("Kurzbefehle", systemImage: "keyboard") {
                 HotkeysTab()
             }
@@ -19,9 +16,6 @@ struct SettingsView: View {
             }
             Tab("KI", systemImage: "sparkles") {
                 AITab()
-            }
-            Tab("Wörterbuch", systemImage: "character.book.closed") {
-                DictionaryTab()
             }
             Tab("Verlauf", systemImage: "clock.arrow.circlepath") {
                 HistoryTab()
@@ -38,18 +32,6 @@ struct SettingsView: View {
         .onDisappear {
             NSApp.setActivationPolicy(.accessory)
         }
-    }
-}
-
-struct GeneralTab: View {
-    var body: some View {
-        Form {
-            Section {
-                Text("Allgemein — folgt in Schritt 8")
-                    .foregroundStyle(.secondary)
-            }
-        }
-        .formStyle(.grouped)
     }
 }
 
@@ -156,7 +138,6 @@ struct HotkeysTab: View {
 }
 
 // EnginesTab lebt jetzt in `EnginesTab.swift`.
-// DictionaryTab lebt jetzt in `DictionaryTab.swift`.
 
 struct AboutTab: View {
     var body: some View {
