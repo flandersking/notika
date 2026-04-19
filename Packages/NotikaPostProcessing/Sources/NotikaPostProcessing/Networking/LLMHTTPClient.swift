@@ -7,7 +7,7 @@ public final class LLMHTTPClient: Sendable {
     private let retryDelay: TimeInterval
     private let logger = Logger(subsystem: "com.notika.mac", category: "PostProcessing.HTTP")
 
-    public init(session: URLSession = .shared, timeout: TimeInterval = 12, retryDelay: TimeInterval = 1) {
+    public init(session: URLSession = .shared, timeout: TimeInterval = 5, retryDelay: TimeInterval = 1) {
         self.session = session
         self.timeout = timeout
         self.retryDelay = retryDelay
