@@ -28,8 +28,6 @@ final class DictationCoordinator {
     private var hotkeyTask: Task<Void, Never>?
     private var levelsTask: Task<Void, Never>?
     private var pipelineTask: Task<Void, Never>?
-    private var triggerMode: HotkeyManager.TriggerMode = .pushToTalk
-
     /// Zustand, um im Toggle-Modus zu wissen, ob wir gerade aufnehmen.
     private var activeMode: DictationMode?
 
@@ -82,13 +80,33 @@ final class DictationCoordinator {
 
     func start() {
         hotkeyManager.start()
+        refreshHotkeyConfigs()
         hotkeyTask = Task { @MainActor [weak self] in
             guard let self else { return }
             for await event in self.hotkeyManager.events {
                 self.handle(event)
             }
         }
+        // UI-Änderungen im Kurzbefehle-Tab triggern Reconfigure
+        NotificationCenter.default.addObserver(
+            forName: .notikaHotkeyConfigChanged,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            Task { @MainActor in self?.refreshHotkeyConfigs() }
+        }
         logger.info("DictationCoordinator gestartet")
+    }
+
+    /// Liest die aktuellen Hotkey-Configs aus dem SettingsStore und wendet
+    /// sie auf den HotkeyManager an. Wird beim Start + bei UI-Änderungen aufgerufen.
+    func refreshHotkeyConfigs() {
+        var configs: [DictationMode: ModeHotkeyConfig] = [:]
+        for mode in DictationMode.allCases {
+            configs[mode] = settings.hotkeyConfig(for: mode)
+        }
+        hotkeyManager.applyModifierConfigs(configs)
+        logger.info("Hotkey-Configs aktualisiert (\(configs.count, privacy: .public) Modi)")
     }
 
     func stop() {
@@ -96,11 +114,17 @@ final class DictationCoordinator {
         levelsTask?.cancel()
         pipelineTask?.cancel()
         hotkeyManager.stop()
+        NotificationCenter.default.removeObserver(self, name: .notikaHotkeyConfigChanged, object: nil)
     }
 
     // MARK: - Event-Handling
 
     private func handle(_ event: HotkeyEvent) {
+        let mode: DictationMode
+        switch event {
+        case .pressed(let m), .released(let m): mode = m
+        }
+        let triggerMode = settings.hotkeyConfig(for: mode).triggerMode
         switch triggerMode {
         case .pushToTalk:
             handlePushToTalk(event)
