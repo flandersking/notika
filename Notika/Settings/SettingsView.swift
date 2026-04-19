@@ -1,4 +1,5 @@
 import SwiftUI
+import AppKit
 import KeyboardShortcuts
 import NotikaCore
 import NotikaMacOS
@@ -30,6 +31,13 @@ struct SettingsView: View {
             }
         }
         .frame(minWidth: 720, minHeight: 440)
+        .onAppear {
+            NSApp.setActivationPolicy(.regular)
+            NSApp.activate(ignoringOtherApps: true)
+        }
+        .onDisappear {
+            NSApp.setActivationPolicy(.accessory)
+        }
     }
 }
 
