@@ -69,6 +69,15 @@ public final class WhisperKitEngine: TranscriptionEngine, @unchecked Sendable {
         )
     }
 
+    public func preWarm() async {
+        do {
+            _ = try await loadPipeIfNeeded()
+            logger.info("Whisper Pre-Warm OK: \(self.modelID.rawValue, privacy: .public)")
+        } catch {
+            logger.warning("Whisper Pre-Warm fehlgeschlagen: \(error.localizedDescription, privacy: .public)")
+        }
+    }
+
     private func loadPipeIfNeeded() async throws -> WhisperKit {
         if let pipe = whisperKit { return pipe }
         let modelDir = await MainActor.run { modelStore.diskPath(for: modelID) }
@@ -85,7 +94,7 @@ public final class WhisperKitEngine: TranscriptionEngine, @unchecked Sendable {
                 modelFolder: modelDir.path,
                 verbose: false,
                 logLevel: .error,
-                prewarm: false,
+                prewarm: true,
                 load: true,
                 download: false
             )
