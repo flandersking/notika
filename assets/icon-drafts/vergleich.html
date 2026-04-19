@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8"/>
+<title>Notika App-Icon — 4 Konzepte</title>
+<style>
+  :root { color-scheme: dark light; }
+  body {
+    font-family: -apple-system, "SF Pro Text", sans-serif;
+    background: #111;
+    color: #eee;
+    margin: 0;
+    padding: 48px;
+  }
+  h1 { font-weight: 600; letter-spacing: -0.02em; margin-bottom: 8px; }
+  p.lead { color: #888; margin-top: 0; margin-bottom: 48px; }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 48px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .card {
+    background: #1a1a1a;
+    border-radius: 24px;
+    padding: 32px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+  }
+  .card h2 {
+    font-size: 18px;
+    margin: 0 0 4px;
+    color: #fff;
+  }
+  .card .num { color: #60A5FA; font-weight: 700; margin-right: 8px; }
+  .card p { color: #999; font-size: 14px; line-height: 1.5; margin: 0 0 20px; }
+  .iconrow {
+    display: flex;
+    align-items: flex-end;
+    gap: 24px;
+    padding: 24px;
+    background: repeating-conic-gradient(#222 0 25%, #1a1a1a 0 50%) 50%/32px 32px;
+    border-radius: 16px;
+    justify-content: center;
+  }
+  .iconrow img { display: block; border-radius: 0; box-shadow: 0 8px 24px rgba(0,0,0,0.5); }
+  .size-large { width: 256px; height: 256px; }
+  .size-medium { width: 128px; height: 128px; }
+  .size-small { width: 64px; height: 64px; }
+  .size-tiny { width: 32px; height: 32px; }
+  .caption { color: #666; font-size: 11px; text-align: center; margin-top: 8px; }
+  .sizelabel { display: flex; flex-direction: column; align-items: center; }
+</style>
+</head>
+<body>
+  <h1>Notika · 4 App-Icon-Konzepte</h1>
+  <p class="lead">Jedes Icon in Dock-typischen Größen (256, 128, 64, 32 px). Hintergrund ist ein Checker-Muster, damit hell/dunkel sichtbar ist.</p>
+
+  <div class="grid">
+
+    <div class="card">
+      <h2><span class="num">1</span>N-Monogramm aus Waveform</h2>
+      <p>Markenstark. Techy. Weißes N auf dunkelblauem Squircle, der diagonale Balken ist eine Waveform in Hellblau. Reine Notika-Identität.</p>
+      <div class="iconrow">
+        <div class="sizelabel"><img src="1_n_monogramm.svg" class="size-large"/><span class="caption">256</span></div>
+        <div class="sizelabel"><img src="1_n_monogramm.svg" class="size-medium"/><span class="caption">128</span></div>
+        <div class="sizelabel"><img src="1_n_monogramm.svg" class="size-small"/><span class="caption">64</span></div>
+        <div class="sizelabel"><img src="1_n_monogramm.svg" class="size-tiny"/><span class="caption">32</span></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2><span class="num">2</span>Sprechblase + Mikrofon</h2>
+      <p>Warm. Freundlich. Türkiser Hintergrund, weiße Sprechblase mit klassischem Mikrofon darin. „Sprache → Text" sofort lesbar.</p>
+      <div class="iconrow">
+        <div class="sizelabel"><img src="2_sprechblase_mic.svg" class="size-large"/><span class="caption">256</span></div>
+        <div class="sizelabel"><img src="2_sprechblase_mic.svg" class="size-medium"/><span class="caption">128</span></div>
+        <div class="sizelabel"><img src="2_sprechblase_mic.svg" class="size-small"/><span class="caption">64</span></div>
+        <div class="sizelabel"><img src="2_sprechblase_mic.svg" class="size-tiny"/><span class="caption">32</span></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2><span class="num">3</span>Stethoskop + Waveform</h2>
+      <p>Medizinischer Fokus. Weißes Stethoskop auf Medizin-Blau, die Chestpiece zeigt eine Waveform. Phase-2-Positionierung direkt sichtbar.</p>
+      <div class="iconrow">
+        <div class="sizelabel"><img src="3_stethoskop_wave.svg" class="size-large"/><span class="caption">256</span></div>
+        <div class="sizelabel"><img src="3_stethoskop_wave.svg" class="size-medium"/><span class="caption">128</span></div>
+        <div class="sizelabel"><img src="3_stethoskop_wave.svg" class="size-small"/><span class="caption">64</span></div>
+        <div class="sizelabel"><img src="3_stethoskop_wave.svg" class="size-tiny"/><span class="caption">32</span></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2><span class="num">4</span>Kapsel mit Waveform</h2>
+      <p>Abstrakt. Doppeldeutig. Leicht geneigte Pharma-Kapsel (blau/weiß), Waveform zieht sich durch beide Hälften. Medizin-Hint, nicht plakativ.</p>
+      <div class="iconrow">
+        <div class="sizelabel"><img src="4_kapsel_waveform.svg" class="size-large"/><span class="caption">256</span></div>
+        <div class="sizelabel"><img src="4_kapsel_waveform.svg" class="size-medium"/><span class="caption">128</span></div>
+        <div class="sizelabel"><img src="4_kapsel_waveform.svg" class="size-small"/><span class="caption">64</span></div>
+        <div class="sizelabel"><img src="4_kapsel_waveform.svg" class="size-tiny"/><span class="caption">32</span></div>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>

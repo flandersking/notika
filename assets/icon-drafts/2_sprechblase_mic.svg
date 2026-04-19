@@ -1,0 +1,45 @@
+<svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg2" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#14B8A6"/>
+      <stop offset="100%" stop-color="#0E7490"/>
+    </linearGradient>
+    <linearGradient id="bubble2" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="100%" stop-color="#F1F5F9"/>
+    </linearGradient>
+  </defs>
+
+  <!-- macOS rounded-square background -->
+  <rect width="1024" height="1024" rx="230" fill="url(#bg2)"/>
+
+  <!-- Speech bubble with tail bottom-left -->
+  <path d="
+    M 320 180
+    L 780 180
+    C 860 180 900 220 900 300
+    L 900 620
+    C 900 700 860 740 780 740
+    L 420 740
+    L 280 860
+    L 330 740
+    L 320 740
+    C 240 740 200 700 200 620
+    L 200 300
+    C 200 220 240 180 320 180 Z"
+    fill="url(#bubble2)"/>
+
+  <!-- Microphone body -->
+  <rect x="472" y="310" width="80" height="180" rx="40" fill="#0E7490"/>
+  <!-- Mic grill lines -->
+  <line x1="486" y1="350" x2="538" y2="350" stroke="#14B8A6" stroke-width="6" stroke-linecap="round"/>
+  <line x1="486" y1="380" x2="538" y2="380" stroke="#14B8A6" stroke-width="6" stroke-linecap="round"/>
+  <line x1="486" y1="410" x2="538" y2="410" stroke="#14B8A6" stroke-width="6" stroke-linecap="round"/>
+  <line x1="486" y1="440" x2="538" y2="440" stroke="#14B8A6" stroke-width="6" stroke-linecap="round"/>
+
+  <!-- Mic stand U -->
+  <path d="M 410 460 Q 410 560 512 560 Q 614 560 614 460"
+        stroke="#0E7490" stroke-width="14" fill="none" stroke-linecap="round"/>
+  <line x1="512" y1="560" x2="512" y2="620" stroke="#0E7490" stroke-width="14" stroke-linecap="round"/>
+  <line x1="472" y1="620" x2="552" y2="620" stroke="#0E7490" stroke-width="14" stroke-linecap="round"/>
+</svg>

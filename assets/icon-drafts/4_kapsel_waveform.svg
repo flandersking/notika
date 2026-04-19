@@ -1,0 +1,83 @@
+<svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg4" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0F172A"/>
+      <stop offset="100%" stop-color="#1E293B"/>
+    </linearGradient>
+    <linearGradient id="capLeft" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#60A5FA"/>
+      <stop offset="100%" stop-color="#2563EB"/>
+    </linearGradient>
+    <linearGradient id="capRight" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#F8FAFC"/>
+      <stop offset="100%" stop-color="#CBD5E1"/>
+    </linearGradient>
+    <filter id="capShadow" x="-5%" y="-5%" width="110%" height="110%">
+      <feGaussianBlur stdDeviation="10" in="SourceAlpha"/>
+      <feOffset dx="0" dy="10"/>
+      <feComponentTransfer><feFuncA type="linear" slope="0.35"/></feComponentTransfer>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- macOS rounded-square background (squircle frame) -->
+  <rect width="1024" height="1024" rx="230" fill="url(#bg4)"/>
+
+  <!-- Capsule tilted ~22° — now 900×340, centered, fills most of the icon -->
+  <g transform="translate(512 512) rotate(-22) translate(-450 -170)" filter="url(#capShadow)">
+    <!-- Left half (blue) -->
+    <path d="
+      M 170 0
+      L 450 0
+      L 450 340
+      L 170 340
+      C 0 340 0 0 170 0 Z"
+      fill="url(#capLeft)"/>
+
+    <!-- Right half (white) -->
+    <path d="
+      M 450 0
+      L 730 0
+      C 900 0 900 340 730 340
+      L 450 340
+      L 450 0 Z"
+      fill="url(#capRight)"/>
+
+    <!-- Center seam -->
+    <line x1="450" y1="14" x2="450" y2="326" stroke="#0F172A" stroke-width="4" opacity="0.25"/>
+
+    <!-- Subtle highlight on top to give 3D feel -->
+    <path d="
+      M 170 16
+      L 730 16
+      C 860 16 870 80 860 100
+      L 200 100
+      C 180 90 120 70 170 16 Z"
+      fill="#FFFFFF" opacity="0.18"/>
+
+    <!-- Waveform on the blue (left) side -->
+    <g fill="#FFFFFF" opacity="0.97">
+      <rect x="195" y="155" width="20" height="30"  rx="8"/>
+      <rect x="230" y="130" width="20" height="80"  rx="8"/>
+      <rect x="265" y="100" width="20" height="140" rx="8"/>
+      <rect x="300" y="70"  width="20" height="200" rx="8"/>
+      <rect x="335" y="115" width="20" height="110" rx="8"/>
+      <rect x="370" y="85"  width="20" height="170" rx="8"/>
+      <rect x="405" y="135" width="20" height="70"  rx="8"/>
+    </g>
+
+    <!-- Waveform continues on the white (right) side (blue bars) -->
+    <g fill="#2563EB">
+      <rect x="482" y="135" width="20" height="70"  rx="8"/>
+      <rect x="517" y="110" width="20" height="120" rx="8"/>
+      <rect x="552" y="80"  width="20" height="180" rx="8"/>
+      <rect x="587" y="115" width="20" height="110" rx="8"/>
+      <rect x="622" y="100" width="20" height="140" rx="8"/>
+      <rect x="657" y="135" width="20" height="70"  rx="8"/>
+      <rect x="692" y="155" width="20" height="30"  rx="8"/>
+    </g>
+  </g>
+</svg>
