@@ -1,6 +1,31 @@
 # Notika — Status
 
-> Letzte Aktualisierung: **2026-04-18** (Phase 1b-3 abgeschlossen)
+> Letzte Aktualisierung: **2026-04-19** (Phase 1b-6 + Performance-Quick-Wins)
+
+## Phase 1b-6 abgeschlossen (2026-04-19) + Phase 1b-4 mit erledigt
+
+- Neuer CGEventTap-basierter Trigger-Pfad parallel zu `sindresorhus/KeyboardShortcuts`
+- 3 Modifier-Optionen konfigurierbar: Fn, Rechte ⌘, Rechte ⌥
+- PTT + Toggle pro Modus wählbar (erledigt 1b-4 mit)
+- Pure State-Machine (`ModifierHotkeyTapState`) mit 13 Unit-Tests: Hold-Schwelle 100 ms, Cancel-Regel bei Co-Keys, Right-vs-Left-Diskrimination via keyCode 54/61
+- Settings: `ModeHotkeyConfig` pro Modus, JSON-persistiert in UserDefaults
+- HotkeysTab-UI: 3 Spalten (Tastenkombi + Modifier-Trigger + Auslöser) pro Modus
+- Accessibility-Warnbanner im Tab bei fehlender Permission
+- Live-Config-Update via `NotificationCenter` — kein App-Neustart nötig
+- Klassische Shortcuts bleiben als Parallelpfad aktiv (Wahl A: Ergänzung, nicht Ersatz)
+- 22 neue Unit-Tests für Phase 1b-6 (3 + 3 + 3 + 13), insgesamt ~116 Tests
+- Smoketest: `docs/PHASE_1B_6_SMOKETEST.md` (8 Szenarien)
+- Build SUCCEEDED
+
+## Performance-Quick-Wins (2026-04-19)
+
+- LLM-Request-Timeout 12 s → 5 s
+- E2E-Timing-Logs in `DictationCoordinator` (STT / LLM / Insert / Total)
+- STT-Engine-Cache: WhisperKit wird nicht mehr pro Pipeline neu geladen
+- **Gemessene Werte:** Cold-Start 1.6 s STT → gecacht 0.5 s (−71 %). Total nach Recording-Stop: 1.7-1.8 s bei Whisper+Anthropic Haiku.
+- Logs via `log stream --predicate 'subsystem == "com.notika.mac"' --level info`
+
+Nächste Sub-Phase: 1b-5 (Sparkle Auto-Update) oder UX-Feinschliff (Dock-Icon, Close-Verhalten)
 
 ## Phase 1b-3 abgeschlossen (2026-04-18)
 
