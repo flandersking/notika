@@ -10,19 +10,7 @@ public enum HotkeyEvent: Sendable, Equatable {
 
 @MainActor
 public final class HotkeyManager {
-    public enum TriggerMode: String, Codable, Sendable, CaseIterable, Identifiable {
-        case pushToTalk
-        case toggle
-
-        public var id: String { rawValue }
-
-        public var displayName: String {
-            switch self {
-            case .pushToTalk: return "Push-to-Talk (halten)"
-            case .toggle:     return "Toggle (klick – klick)"
-            }
-        }
-    }
+    public typealias TriggerMode = NotikaCore.TriggerMode
 
     private let logger = Logger(subsystem: "com.notika.mac", category: "Hotkeys")
     private let continuation: AsyncStream<HotkeyEvent>.Continuation
