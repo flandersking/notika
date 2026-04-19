@@ -1,6 +1,20 @@
 # Notika — Status
 
-> Letzte Aktualisierung: **2026-04-18** (Phase 1b-2 abgeschlossen)
+> Letzte Aktualisierung: **2026-04-18** (Phase 1b-3 abgeschlossen)
+
+## Phase 1b-3 abgeschlossen (2026-04-18)
+
+- SwiftData-Dictionary für STT-Hints implementiert
+- 5 feste Kategorien: Allgemein, Namen, Firmen, Medizin, Technik
+- Settings-Tab „Wörterbuch" mit Table, Add/Edit/Remove, Such- und Filter-UI
+- CSV Import + Export (UTF-8 + Latin-1-Fallback, quote-aware Parser)
+- `DictionaryHintsCache` (thread-safer NSLock-Wrapper) → `nonisolated hintsForLanguage` für STT-Engines
+- DictationCoordinator reicht Hints an Apple SpeechAnalyzer und WhisperKit weiter
+- Limit 100 Hints pro Sprache (neueste via updatedAt)
+- 94 Tests grün (30 NotikaCore + 19 NotikaDictionary + 15 NotikaWhisper + 30 NotikaPostProcessing)
+- Build SUCCEEDED
+
+Nächste Sub-Phase: 1b-6 (Modifier-only Hotkeys) oder 1b-4 (Toggle-Trigger-Modus) oder 1b-5 (Sparkle)
 
 ## Phase 1b-2 abgeschlossen (2026-04-18)
 
