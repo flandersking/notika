@@ -32,6 +32,9 @@ Package.resolved
 *.p12
 *.mobileprovision
 *.cer
+api-key*
+*api-key*
+*apikey*
 
 ## Downloaded Whisper Models (zu groß für Git)
 Models/*.bin
