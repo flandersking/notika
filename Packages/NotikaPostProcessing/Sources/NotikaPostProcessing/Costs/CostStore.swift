@@ -15,8 +15,11 @@ public final class CostStore {
         self.now = now
     }
 
-    public func record(modelID: String, tokensIn: Int, tokensOut: Int) {
-        let cost = CostCalculator.cost(modelID: modelID, tokensIn: tokensIn, tokensOut: tokensOut) ?? 0
+    /// Speichert einen bereits berechneten USD-Betrag. `nil` = keine Kosten
+    /// (z. B. lokale Ollama-Modelle oder Apple Foundation) → callCount zählt
+    /// trotzdem, totalUSD bleibt unverändert.
+    public func record(costUSD: Double?) {
+        let cost = costUSD ?? 0
 
         var todaySnap = readSnapshot(key: dailyKey())
         todaySnap = CostSnapshot(

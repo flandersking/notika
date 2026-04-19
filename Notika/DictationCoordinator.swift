@@ -248,11 +248,7 @@ final class DictationCoordinator {
                             )
                             processed = result.text.isEmpty ? transcript.text : result.text
                             engineResult = result
-                            if let model = result.model,
-                               let tIn = result.tokensIn,
-                               let tOut = result.tokensOut {
-                                self.costStore.record(modelID: model, tokensIn: tIn, tokensOut: tOut)
-                            }
+                            self.costStore.record(costUSD: result.costUSD)
                             self.logger.info("Transkript final (LLM): \(processed, privacy: .public)")
                         } catch let err as LLMError {
                             self.logger.warning("LLM-Fehler: \(String(describing: err), privacy: .public) — Rohtext-Fallback")
