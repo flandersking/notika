@@ -19,4 +19,14 @@ public protocol TranscriptionEngine: AnyObject, Sendable {
         language: Language,
         hints: [String]
     ) async throws -> Transcript
+
+    /// Optionaler Pre-Warm: Modell laden / CoreML-Graph kompilieren,
+    /// damit das erste echte `transcribe` ohne Cold-Start läuft.
+    /// Default-Implementierung ist no-op — Engines ohne Cold-Start (z. B. Apple)
+    /// müssen nichts überschreiben.
+    func preWarm() async
+}
+
+public extension TranscriptionEngine {
+    func preWarm() async { }
 }
