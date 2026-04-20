@@ -111,7 +111,9 @@ public final class WhisperKitEngine: TranscriptionEngine, @unchecked Sendable {
     }
 
     private func performLoad() async throws -> WhisperKit {
-        let modelDir = await MainActor.run { modelStore.diskPath(for: modelID) }
+        let (modelDir, tokenizerDir) = await MainActor.run {
+            (modelStore.diskPath(for: modelID), modelStore.modelsDirectory)
+        }
         guard FileManager.default.fileExists(atPath: modelDir.path),
               let contents = try? FileManager.default.contentsOfDirectory(atPath: modelDir.path),
               !contents.isEmpty
@@ -119,8 +121,11 @@ public final class WhisperKitEngine: TranscriptionEngine, @unchecked Sendable {
             throw WhisperError.modelNotInstalled(modelID)
         }
         do {
+            // tokenizerFolder explizit setzen — sonst fällt swift-transformers' HubApi
+            // auf ~/Documents/huggingface zurück und triggert TCC-Dialog.
             return try await WhisperKit(
                 modelFolder: modelDir.path,
+                tokenizerFolder: tokenizerDir,
                 verbose: false,
                 logLevel: .error,
                 prewarm: true,
