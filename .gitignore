@@ -5,6 +5,11 @@
 ._*
 .Spotlight-V100
 .Trashes
+# Finder-/iCloud-Sync-Konflikt-Kopien (zB "AppDelegate 2.swift")
+* [0-9].swift
+* [0-9].md
+* [0-9].yml
+* [0-9].plist
 
 ## Xcode
 # Build products
