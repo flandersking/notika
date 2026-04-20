@@ -1,5 +1,5 @@
 import Foundation
-import NotikaCore
+import KirjoCore
 
 /// Preise pro 1 Million Tokens in USD.
 /// Quelle: Provider-Doku, Stand 2026-04-18.

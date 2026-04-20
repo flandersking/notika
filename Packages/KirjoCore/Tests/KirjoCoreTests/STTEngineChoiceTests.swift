@@ -1,5 +1,5 @@
 import XCTest
-@testable import NotikaCore
+@testable import KirjoCore
 
 final class STTEngineChoiceTests: XCTestCase {
     func test_apple_codable_roundtrip() throws {

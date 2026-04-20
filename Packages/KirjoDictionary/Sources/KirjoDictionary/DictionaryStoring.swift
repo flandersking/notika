@@ -1,5 +1,5 @@
 import Foundation
-import NotikaCore
+import KirjoCore
 
 /// Protokoll für STT-Engines, um Hints (Custom-Vocab) pro Sprache abzufragen.
 /// Phase 1a eingeführt, Phase 1b-3 mit `DictionaryStore` erfüllt.

@@ -2,28 +2,28 @@
 import PackageDescription
 
 let package = Package(
-    name: "NotikaWhisper",
+    name: "KirjoWhisper",
     platforms: [
         .macOS("26.0")
     ],
     products: [
-        .library(name: "NotikaWhisper", targets: ["NotikaWhisper"])
+        .library(name: "KirjoWhisper", targets: ["KirjoWhisper"])
     ],
     dependencies: [
-        .package(path: "../NotikaCore"),
+        .package(path: "../KirjoCore"),
         .package(url: "https://github.com/argmaxinc/WhisperKit.git", from: "0.9.0")
     ],
     targets: [
         .target(
-            name: "NotikaWhisper",
+            name: "KirjoWhisper",
             dependencies: [
-                "NotikaCore",
+                "KirjoCore",
                 .product(name: "WhisperKit", package: "WhisperKit")
             ]
         ),
         .testTarget(
-            name: "NotikaWhisperTests",
-            dependencies: ["NotikaWhisper"]
+            name: "KirjoWhisperTests",
+            dependencies: ["KirjoWhisper"]
         )
     ]
 )

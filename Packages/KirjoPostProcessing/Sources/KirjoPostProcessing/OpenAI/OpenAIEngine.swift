@@ -1,5 +1,5 @@
 import Foundation
-import NotikaCore
+import KirjoCore
 import os
 
 public final class OpenAIEngine: PostProcessingEngine {

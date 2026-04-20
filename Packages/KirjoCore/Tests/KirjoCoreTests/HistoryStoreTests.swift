@@ -1,6 +1,6 @@
 import XCTest
 import SwiftData
-@testable import NotikaCore
+@testable import KirjoCore
 
 final class HistoryStoreTests: XCTestCase {
     var store: HistoryStore!

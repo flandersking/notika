@@ -1,5 +1,5 @@
 import XCTest
-@testable import NotikaTranscription
+@testable import KirjoTranscription
 
 final class TranscriptionEngineFactoryTests: XCTestCase {
     func testAppleSpeechAnalyzerIsAvailable() {

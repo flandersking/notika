@@ -1,5 +1,5 @@
 import XCTest
-@testable import NotikaCore
+@testable import KirjoCore
 
 final class ModeHotkeyConfigTests: XCTestCase {
     func test_defaultInit_noModifier_pushToTalk() {

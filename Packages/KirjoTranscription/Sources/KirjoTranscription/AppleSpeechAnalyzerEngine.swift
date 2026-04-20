@@ -1,7 +1,7 @@
 import AVFoundation
 import CoreMedia
 import Foundation
-import NotikaCore
+import KirjoCore
 import Speech
 import os
 
@@ -36,7 +36,7 @@ public final class AppleSpeechAnalyzerEngine: TranscriptionEngine {
             audioFile = try AVAudioFile(forReading: url)
             logger.info("Audio geladen: \(url.lastPathComponent, privacy: .public) (\(audioFile.length) Frames, \(audioFile.fileFormat.sampleRate, format: .fixed) Hz)")
         case .samples:
-            throw NotikaError.transcriptionFailed(
+            throw KirjoError.transcriptionFailed(
                 "AppleSpeechAnalyzer benötigt aktuell eine Datei."
             )
         }
@@ -98,7 +98,7 @@ public final class AppleSpeechAnalyzerEngine: TranscriptionEngine {
         case .installed:
             return
         case .unsupported:
-            throw NotikaError.transcriptionFailed(
+            throw KirjoError.transcriptionFailed(
                 "Diese Sprache wird von Apple SpeechAnalyzer nicht unterstützt."
             )
         case .supported, .downloading:
@@ -115,7 +115,7 @@ public final class AppleSpeechAnalyzerEngine: TranscriptionEngine {
             let after = await AssetInventory.status(forModules: [module])
             logger.info("Asset status nach: \(String(describing: after), privacy: .public)")
             if after != .installed {
-                throw NotikaError.transcriptionFailed(
+                throw KirjoError.transcriptionFailed(
                     "Sprachmodell konnte nicht installiert werden (Status: \(String(describing: after)))."
                 )
             }

@@ -2,24 +2,24 @@
 import PackageDescription
 
 let package = Package(
-    name: "NotikaDictionary",
+    name: "KirjoDictionary",
     platforms: [
         .macOS("26.0")
     ],
     products: [
-        .library(name: "NotikaDictionary", targets: ["NotikaDictionary"])
+        .library(name: "KirjoDictionary", targets: ["KirjoDictionary"])
     ],
     dependencies: [
-        .package(path: "../NotikaCore")
+        .package(path: "../KirjoCore")
     ],
     targets: [
         .target(
-            name: "NotikaDictionary",
-            dependencies: ["NotikaCore"]
+            name: "KirjoDictionary",
+            dependencies: ["KirjoCore"]
         ),
         .testTarget(
-            name: "NotikaDictionaryTests",
-            dependencies: ["NotikaDictionary"]
+            name: "KirjoDictionaryTests",
+            dependencies: ["KirjoDictionary"]
         )
     ]
 )

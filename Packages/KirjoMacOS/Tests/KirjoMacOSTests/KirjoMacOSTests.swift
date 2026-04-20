@@ -1,8 +1,8 @@
 import XCTest
 import KeyboardShortcuts
-@testable import NotikaMacOS
+@testable import KirjoMacOS
 
-final class NotikaMacOSTests: XCTestCase {
+final class KirjoMacOSTests: XCTestCase {
     func testHotkeyNamesAreDistinct() {
         let names: Set<String> = [
             KeyboardShortcuts.Name.modeLiteral.rawValue,

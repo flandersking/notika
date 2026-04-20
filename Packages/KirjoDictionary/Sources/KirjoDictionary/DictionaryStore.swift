@@ -1,6 +1,6 @@
 import Foundation
 import SwiftData
-import NotikaCore
+import KirjoCore
 
 /// Phase 1b-3: SwiftData-basierter DictionaryStore. Erfüllt das `DictionaryStoring`-Protokoll
 /// aus Phase 1a über einen nonisolated-Cache.

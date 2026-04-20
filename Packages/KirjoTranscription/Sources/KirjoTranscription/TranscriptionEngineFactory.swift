@@ -1,5 +1,5 @@
 import Foundation
-import NotikaCore
+import KirjoCore
 
 public enum TranscriptionEngineFactory {
     public static func availableEngines() -> [TranscriptionEngineID] {
@@ -11,7 +11,7 @@ public enum TranscriptionEngineFactory {
         case .appleSpeechAnalyzer:
             return AppleSpeechAnalyzerEngine()
         case .whisperCpp:
-            // Phase 1b — wird durch `NotikaWhisper.WhisperCppEngine` ersetzt.
+            // Phase 1b — wird durch `KirjoWhisper.WhisperCppEngine` ersetzt.
             return AppleSpeechAnalyzerEngine()
         }
     }

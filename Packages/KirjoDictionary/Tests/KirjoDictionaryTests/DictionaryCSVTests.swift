@@ -1,6 +1,6 @@
 import XCTest
-@testable import NotikaDictionary
-import NotikaCore
+@testable import KirjoDictionary
+import KirjoCore
 
 final class DictionaryCSVTests: XCTestCase {
 

@@ -1,5 +1,5 @@
 import XCTest
-@testable import NotikaCore
+@testable import KirjoCore
 
 final class DictionaryCategoryTests: XCTestCase {
     func test_allCases_displayName_nonEmpty() {

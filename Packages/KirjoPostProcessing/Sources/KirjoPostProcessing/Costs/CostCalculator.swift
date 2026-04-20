@@ -1,5 +1,5 @@
 import Foundation
-import NotikaCore
+import KirjoCore
 
 public enum CostCalculator {
     /// Berechnet die USD-Kosten für einen Call. `nil` wenn Modell nicht in Tabelle (z.B. Ollama-Modell).

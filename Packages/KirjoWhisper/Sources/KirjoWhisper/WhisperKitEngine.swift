@@ -1,6 +1,6 @@
 import Foundation
 import AVFoundation
-import NotikaCore
+import KirjoCore
 import os
 import WhisperKit
 

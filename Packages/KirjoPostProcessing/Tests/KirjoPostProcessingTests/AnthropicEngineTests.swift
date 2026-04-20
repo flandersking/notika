@@ -1,6 +1,6 @@
 import XCTest
-@testable import NotikaPostProcessing
-import NotikaCore
+@testable import KirjoPostProcessing
+import KirjoCore
 
 final class AnthropicEngineTests: XCTestCase {
     var engine: AnthropicEngine!

@@ -1,7 +1,7 @@
 import XCTest
 import SwiftData
-@testable import NotikaDictionary
-import NotikaCore
+@testable import KirjoDictionary
+import KirjoCore
 
 final class DictionaryStoreTests: XCTestCase {
     var container: ModelContainer!

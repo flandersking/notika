@@ -1,6 +1,6 @@
 import XCTest
-@testable import NotikaMacOS
-import NotikaCore
+@testable import KirjoMacOS
+import KirjoCore
 
 final class ModifierHotkeyTapStateTests: XCTestCase {
 

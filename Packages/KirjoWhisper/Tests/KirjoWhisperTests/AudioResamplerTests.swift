@@ -1,5 +1,5 @@
 import XCTest
-@testable import NotikaWhisper
+@testable import KirjoWhisper
 
 final class AudioResamplerTests: XCTestCase {
 

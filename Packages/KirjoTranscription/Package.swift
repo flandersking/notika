@@ -2,25 +2,25 @@
 import PackageDescription
 
 let package = Package(
-    name: "NotikaTranscription",
+    name: "KirjoTranscription",
     platforms: [
         .macOS("26.0"),
         .iOS("26.0")
     ],
     products: [
-        .library(name: "NotikaTranscription", targets: ["NotikaTranscription"])
+        .library(name: "KirjoTranscription", targets: ["KirjoTranscription"])
     ],
     dependencies: [
-        .package(path: "../NotikaCore")
+        .package(path: "../KirjoCore")
     ],
     targets: [
         .target(
-            name: "NotikaTranscription",
-            dependencies: ["NotikaCore"]
+            name: "KirjoTranscription",
+            dependencies: ["KirjoCore"]
         ),
         .testTarget(
-            name: "NotikaTranscriptionTests",
-            dependencies: ["NotikaTranscription"]
+            name: "KirjoTranscriptionTests",
+            dependencies: ["KirjoTranscription"]
         )
     ]
 )

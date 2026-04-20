@@ -2,28 +2,28 @@
 import PackageDescription
 
 let package = Package(
-    name: "NotikaMacOS",
+    name: "KirjoMacOS",
     platforms: [
         .macOS("26.0")
     ],
     products: [
-        .library(name: "NotikaMacOS", targets: ["NotikaMacOS"])
+        .library(name: "KirjoMacOS", targets: ["KirjoMacOS"])
     ],
     dependencies: [
-        .package(path: "../NotikaCore"),
+        .package(path: "../KirjoCore"),
         .package(url: "https://github.com/sindresorhus/KeyboardShortcuts", from: "2.0.0")
     ],
     targets: [
         .target(
-            name: "NotikaMacOS",
+            name: "KirjoMacOS",
             dependencies: [
-                "NotikaCore",
+                "KirjoCore",
                 .product(name: "KeyboardShortcuts", package: "KeyboardShortcuts")
             ]
         ),
         .testTarget(
-            name: "NotikaMacOSTests",
-            dependencies: ["NotikaMacOS"]
+            name: "KirjoMacOSTests",
+            dependencies: ["KirjoMacOS"]
         )
     ]
 )

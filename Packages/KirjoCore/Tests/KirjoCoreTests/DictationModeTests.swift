@@ -1,5 +1,5 @@
 import XCTest
-@testable import NotikaCore
+@testable import KirjoCore
 
 final class DictationModeTests: XCTestCase {
     func testAllModesHaveDisplayName() {

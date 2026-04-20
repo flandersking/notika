@@ -1,5 +1,5 @@
 import Foundation
-import NotikaCore
+import KirjoCore
 
 public enum PostProcessingEngineFactory {
     /// Liefert die passende Engine-Instanz für eine LLMChoice.

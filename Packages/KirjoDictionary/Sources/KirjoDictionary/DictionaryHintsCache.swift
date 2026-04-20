@@ -1,5 +1,5 @@
 import Foundation
-import NotikaCore
+import KirjoCore
 
 /// Thread-safer Snapshot-Cache für STT-Engines (nonisolated-Access möglich).
 /// Wird vom DictionaryStore bei Änderungen aktualisiert.

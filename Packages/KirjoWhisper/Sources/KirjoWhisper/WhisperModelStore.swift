@@ -1,5 +1,5 @@
 import Foundation
-import NotikaCore
+import KirjoCore
 import os
 import WhisperKit
 

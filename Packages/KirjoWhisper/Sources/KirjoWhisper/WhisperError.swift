@@ -1,5 +1,5 @@
 import Foundation
-import NotikaCore
+import KirjoCore
 
 public enum WhisperError: Error, Sendable, Equatable, CustomStringConvertible {
     case modelNotInstalled(WhisperModelID)

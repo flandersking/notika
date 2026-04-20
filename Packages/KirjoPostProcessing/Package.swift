@@ -2,26 +2,26 @@
 import PackageDescription
 
 let package = Package(
-    name: "NotikaPostProcessing",
+    name: "KirjoPostProcessing",
     platforms: [
         .macOS("26.0"),
         .iOS("26.0")
     ],
     products: [
-        .library(name: "NotikaPostProcessing", targets: ["NotikaPostProcessing"])
+        .library(name: "KirjoPostProcessing", targets: ["KirjoPostProcessing"])
     ],
     dependencies: [
-        .package(path: "../NotikaCore")
+        .package(path: "../KirjoCore")
     ],
     targets: [
         .target(
-            name: "NotikaPostProcessing",
-            dependencies: ["NotikaCore"],
+            name: "KirjoPostProcessing",
+            dependencies: ["KirjoCore"],
             resources: [.copy("Prompts")]
         ),
         .testTarget(
-            name: "NotikaPostProcessingTests",
-            dependencies: ["NotikaPostProcessing"],
+            name: "KirjoPostProcessingTests",
+            dependencies: ["KirjoPostProcessing"],
             resources: [.copy("Fixtures")]
         )
     ]

@@ -1,5 +1,5 @@
 import XCTest
-@testable import NotikaPostProcessing
+@testable import KirjoPostProcessing
 
 final class PricingTableTests: XCTestCase {
 

@@ -1,5 +1,5 @@
 import Foundation
-import NotikaCore
+import KirjoCore
 
 public enum DictionaryCSV {
     public enum Row: Sendable, Equatable {

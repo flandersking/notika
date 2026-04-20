@@ -1,6 +1,6 @@
 import XCTest
-import NotikaCore
-@testable import NotikaPostProcessing
+import KirjoCore
+@testable import KirjoPostProcessing
 
 final class PostProcessingEngineFactoryTests: XCTestCase {
     func testFoundationModelsEngineIsProduced() {

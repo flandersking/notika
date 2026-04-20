@@ -1,6 +1,6 @@
 import Foundation
 import Observation
-import NotikaCore
+import KirjoCore
 
 @MainActor
 @Observable

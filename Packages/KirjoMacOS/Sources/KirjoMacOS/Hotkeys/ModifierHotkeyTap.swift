@@ -1,7 +1,7 @@
 import AppKit
 import CoreGraphics
 import Foundation
-import NotikaCore
+import KirjoCore
 import os
 
 public enum ModifierHotkeyTapEvent: Sendable, Equatable {

@@ -1,6 +1,6 @@
 import Foundation
 import KeyboardShortcuts
-import NotikaCore
+import KirjoCore
 import os
 
 public enum HotkeyEvent: Sendable, Equatable {
@@ -10,7 +10,7 @@ public enum HotkeyEvent: Sendable, Equatable {
 
 @MainActor
 public final class HotkeyManager {
-    public typealias TriggerMode = NotikaCore.TriggerMode
+    public typealias TriggerMode = KirjoCore.TriggerMode
 
     private let logger = Logger(subsystem: "com.notika.mac", category: "Hotkeys")
     private let continuation: AsyncStream<HotkeyEvent>.Continuation

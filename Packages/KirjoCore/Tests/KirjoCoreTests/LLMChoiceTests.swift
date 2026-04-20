@@ -1,5 +1,5 @@
 import XCTest
-@testable import NotikaCore
+@testable import KirjoCore
 
 final class LLMChoiceTests: XCTestCase {
     func test_anthropicHaiku_codable_roundtrip() throws {

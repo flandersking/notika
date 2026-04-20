@@ -1,6 +1,6 @@
 import Foundation
 
-public enum NotikaError: LocalizedError, Sendable {
+public enum KirjoError: LocalizedError, Sendable {
     case microphonePermissionDenied
     case speechRecognitionPermissionDenied
     case accessibilityPermissionDenied

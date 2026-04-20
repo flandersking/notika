@@ -1,6 +1,6 @@
 import XCTest
-@testable import NotikaWhisper
-import NotikaCore
+@testable import KirjoWhisper
+import KirjoCore
 
 final class WhisperModelStoreTests: XCTestCase {
 

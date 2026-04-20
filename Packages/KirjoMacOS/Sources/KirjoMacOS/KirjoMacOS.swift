@@ -1,6 +1,6 @@
 import Foundation
 import KeyboardShortcuts
-import NotikaCore
+import KirjoCore
 
 public extension KeyboardShortcuts.Name {
     static let modeLiteral = Self("notika.mode.literal")

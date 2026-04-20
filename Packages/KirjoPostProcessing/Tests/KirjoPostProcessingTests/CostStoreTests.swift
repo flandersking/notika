@@ -1,6 +1,6 @@
 import XCTest
-@testable import NotikaPostProcessing
-import NotikaCore
+@testable import KirjoPostProcessing
+import KirjoCore
 
 final class CostStoreTests: XCTestCase {
     var defaults: UserDefaults!

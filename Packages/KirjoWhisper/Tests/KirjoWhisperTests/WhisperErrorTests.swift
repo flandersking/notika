@@ -1,6 +1,6 @@
 import XCTest
-@testable import NotikaWhisper
-import NotikaCore
+@testable import KirjoWhisper
+import KirjoCore
 
 final class WhisperErrorTests: XCTestCase {
     func test_modelNotInstalled_userFacingMessage_mentionsLaden() {

@@ -1,6 +1,6 @@
 import Foundation
 import FoundationModels
-import NotikaCore
+import KirjoCore
 import os
 
 /// Post-Processing-Engine, die das Apple Foundation Models Framework nutzt

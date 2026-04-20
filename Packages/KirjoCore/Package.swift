@@ -2,22 +2,22 @@
 import PackageDescription
 
 let package = Package(
-    name: "NotikaCore",
+    name: "KirjoCore",
     platforms: [
         .macOS("26.0"),
         .iOS("26.0")
     ],
     products: [
-        .library(name: "NotikaCore", targets: ["NotikaCore"])
+        .library(name: "KirjoCore", targets: ["KirjoCore"])
     ],
     targets: [
         .target(
-            name: "NotikaCore",
+            name: "KirjoCore",
             swiftSettings: [.enableExperimentalFeature("StrictConcurrency")]
         ),
         .testTarget(
-            name: "NotikaCoreTests",
-            dependencies: ["NotikaCore"]
+            name: "KirjoCoreTests",
+            dependencies: ["KirjoCore"]
         )
     ]
 )

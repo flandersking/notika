@@ -1,5 +1,5 @@
 import Foundation
-import NotikaCore
+import KirjoCore
 
 /// Pure State-Machine für CGEventTap-basierte Modifier-Erkennung.
 /// Keine CG-Abhängigkeiten — rein testbar.

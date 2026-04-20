@@ -1,5 +1,5 @@
 import Foundation
-import NotikaCore
+import KirjoCore
 
 /// Verwaltet die Modus-Prompts:
 /// - Bundle-Defaults (aus den Markdown-Dateien unter `Prompts/`)
