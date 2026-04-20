@@ -51,7 +51,7 @@ struct OnboardingFlow: View {
             .transition(.opacity.combined(with: .move(edge: .trailing)))
             .animation(.snappy, value: step)
         }
-        .frame(width: 560, height: 480)
+        .frame(width: 560, height: 640)
         .background(.regularMaterial)
         .task { checker.refresh() }
     }
