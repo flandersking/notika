@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Notika Build-Script (Debug)
+# Kirjo Build-Script (Debug)
 # Nutze: ./scripts/build.sh
 
 cd "$(dirname "$0")/.."
@@ -11,8 +11,8 @@ xcodegen generate
 
 echo "🔨 xcodebuild Debug"
 xcodebuild \
-  -project Notika.xcodeproj \
-  -scheme Notika \
+  -project Kirjo.xcodeproj \
+  -scheme Kirjo \
   -configuration Debug \
   -destination 'platform=macOS' \
   -skipPackagePluginValidation \

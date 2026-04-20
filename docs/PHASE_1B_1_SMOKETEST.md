@@ -4,7 +4,7 @@ Manuelle Akzeptanz-Tests vor dem Commit „Phase 1b-1 done".
 
 ## Vorbereitung
 - macOS 26 Tahoe, Apple Silicon
-- Notika frisch installiert oder `defaults delete <bundle-id>` gefolgt von Neustart
+- Kirjo frisch installiert oder `defaults delete <bundle-id>` gefolgt von Neustart
 - Bereit gehaltene API-Keys: Anthropic, OpenAI, Google
 - Lokal laufender Ollama (`ollama serve`), `ollama pull llama3.2` ausgeführt
 
@@ -42,18 +42,18 @@ Für jeden der 4 Provider × 3 Modi (= 12 Tests):
 - [ ] Ollama-Server gestoppt → Pill „Ollama nicht erreichbar", Rohtext landet
 
 ## First-Use-Hint
-- [ ] `notika.onboarding.llmStepCompleted = false`, `notika.hint.llmShown` gelöscht
+- [ ] `kirjo.onboarding.llmStepCompleted = false`, `kirjo.hint.llmShown` gelöscht
 - [ ] Mode 2 oder 3 starten → Hint-Sheet erscheint einmalig
 - [ ] Sheet schließen, Mode 2 erneut starten → Hint kommt **nicht** wieder
 
 ## Migration
-- [ ] Phase-1a-Build laufen lassen, dann Phase-1b-1-Build → `notika.settings.llmChoice` ist weg, `notika.settings.globalLLMChoice` enthält Apple-Foundation-Default
+- [ ] Phase-1a-Build laufen lassen, dann Phase-1b-1-Build → `kirjo.settings.llmChoice` ist weg, `kirjo.settings.globalLLMChoice` enthält Apple-Foundation-Default
 - [ ] Diktat funktioniert weiterhin
 
 ## Sicherheit
-- [ ] Console-Logs prüfen (`log stream --predicate 'subsystem == "com.notika.mac"'`) — keine Keys, keine Diktat-Inhalte bei Cloud
-- [ ] Keychain Access App: Einträge `app.notika.apikey.anthropic/openai/google` vorhanden, Werte verschlüsselt
+- [ ] Console-Logs prüfen (`log stream --predicate 'subsystem == "com.kirjo.mac"'`) — keine Keys, keine Diktat-Inhalte bei Cloud
+- [ ] Keychain Access App: Einträge `app.kirjo.apikey.anthropic/openai/google` vorhanden, Werte verschlüsselt
 
 ## Build/Signatur
-- [ ] `codesign -dvv /Applications/Notika.app` zeigt Team `P7QK554EET`
+- [ ] `codesign -dvv /Applications/Kirjo.app` zeigt Team `P7QK554EET`
 - [ ] Bedienungshilfen-Toggle bleibt nach Rebuild stabil

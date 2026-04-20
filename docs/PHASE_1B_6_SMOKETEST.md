@@ -4,7 +4,7 @@
 
 ## Setup
 
-1. Öffne Notika → Einstellungen → **Kurzbefehle**-Tab
+1. Öffne Kirjo → Einstellungen → **Kurzbefehle**-Tab
 2. Konfiguriere testweise:
    - **Literal:** Modifier-Trigger = "Fn-Taste", Auslöser = "Halten"
    - **Social:** Modifier-Trigger = "Rechte ⌘-Taste", Auslöser = "Antippen"
@@ -45,9 +45,9 @@
 - Fn länger halten (>150 ms) → Aufnahme startet
 
 ### 7. Accessibility-Permission widerrufen
-- Notika beenden
-- System-Einstellungen → Datenschutz → Bedienungshilfen → Notika deaktivieren
-- Notika neu starten → Kurzbefehle-Tab öffnen
+- Kirjo beenden
+- System-Einstellungen → Datenschutz → Bedienungshilfen → Kirjo deaktivieren
+- Kirjo neu starten → Kurzbefehle-Tab öffnen
 - ✅ **Erwartet:** Warnbanner sichtbar, klassische Shortcuts (⌘⌥1/2/3) funktionieren weiter, Modifier-Trigger **nicht**
 - Permission wieder aktivieren, App neu starten → Modifier-Trigger funktionieren wieder
 
@@ -62,7 +62,7 @@
 - Hold-Schwelle fix auf 100 ms (nicht UI-konfigurierbar)
 - Linke Cmd/Option werden bewusst ignoriert (System-Konflikte)
 - Fn-Erkennung ist auf eingebauten Apple-Tastaturen getestet — bei externen kann `.function`-Flag fehlen
-- Persistierung in UserDefaults unter `notika.hotkey.config.<mode>` (JSON)
+- Persistierung in UserDefaults unter `kirjo.hotkey.config.<mode>` (JSON)
 
 ## Unit-Test-Abdeckung
 

@@ -42,4 +42,4 @@ Manuelle Akzeptanz-Tests vor dem Commit „Phase 1b-3 done".
 
 ## Build
 - [ ] Build SUCCEEDED mit Team P7QK554EET
-- [ ] Alle Tests grün: NotikaCore, NotikaDictionary, NotikaWhisper, NotikaPostProcessing
+- [ ] Alle Tests grün: KirjoCore, KirjoDictionary, KirjoWhisper, KirjoPostProcessing
