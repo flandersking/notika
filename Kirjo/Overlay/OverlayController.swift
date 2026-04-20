@@ -50,7 +50,7 @@ final class OverlayController {
         let hosting = NSHostingController(
             rootView: PillView(model: model)
                 .fixedSize(horizontal: true, vertical: true)
-                .padding(8)
+                .padding(24)
         )
         hosting.view.wantsLayer = true
         hosting.view.layer?.backgroundColor = .clear
