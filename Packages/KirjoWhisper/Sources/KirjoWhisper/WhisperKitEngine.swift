@@ -11,6 +11,8 @@ public final class WhisperKitEngine: TranscriptionEngine, @unchecked Sendable {
     private let modelID: WhisperModelID
     private let modelStore: WhisperModelStore
     private var whisperKit: WhisperKit?
+    private var loadTask: Task<Void, Error>?
+    private let loadLock = NSLock()
     private let logger = Logger(subsystem: "de.dymny.kirjo.mac", category: "Whisper")
 
     public init(modelID: WhisperModelID, modelStore: WhisperModelStore) {
@@ -78,8 +80,37 @@ public final class WhisperKitEngine: TranscriptionEngine, @unchecked Sendable {
         }
     }
 
+    /// Single-Flight-geschützte Initialisierung: parallele Calls warten
+    /// auf denselben in-flight Task statt das Modell mehrfach zu laden.
+    /// WhisperKit selbst ist non-Sendable — wir setzen es deshalb innerhalb
+    /// der Task im Lock und holen es danach wieder aus `whisperKit`.
     private func loadPipeIfNeeded() async throws -> WhisperKit {
-        if let pipe = whisperKit { return pipe }
+        if let pipe = loadLock.withLock({ whisperKit }) {
+            return pipe
+        }
+        let task: Task<Void, Error> = loadLock.withLock {
+            if let existing = loadTask { return existing }
+            let new = Task { [self] in
+                let pipe = try await performLoad()
+                loadLock.withLock { whisperKit = pipe }
+            }
+            loadTask = new
+            return new
+        }
+        do {
+            try await task.value
+            loadLock.withLock { loadTask = nil }
+            guard let pipe = loadLock.withLock({ whisperKit }) else {
+                throw WhisperError.modelLoadFailed(reason: "Pipe nach Load nicht verfügbar")
+            }
+            return pipe
+        } catch {
+            loadLock.withLock { loadTask = nil }
+            throw error
+        }
+    }
+
+    private func performLoad() async throws -> WhisperKit {
         let modelDir = await MainActor.run { modelStore.diskPath(for: modelID) }
         guard FileManager.default.fileExists(atPath: modelDir.path),
               let contents = try? FileManager.default.contentsOfDirectory(atPath: modelDir.path),
@@ -88,9 +119,7 @@ public final class WhisperKitEngine: TranscriptionEngine, @unchecked Sendable {
             throw WhisperError.modelNotInstalled(modelID)
         }
         do {
-            // WhisperKit 0.18 convenience init: modelFolder = local path, download = false,
-            // load wird automatisch true wenn modelFolder gesetzt ist.
-            let pipe = try await WhisperKit(
+            return try await WhisperKit(
                 modelFolder: modelDir.path,
                 verbose: false,
                 logLevel: .error,
@@ -98,8 +127,6 @@ public final class WhisperKitEngine: TranscriptionEngine, @unchecked Sendable {
                 load: true,
                 download: false
             )
-            whisperKit = pipe
-            return pipe
         } catch {
             throw WhisperError.modelLoadFailed(reason: error.localizedDescription)
         }
