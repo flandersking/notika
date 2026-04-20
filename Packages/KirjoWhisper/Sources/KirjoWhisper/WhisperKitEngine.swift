@@ -8,6 +8,10 @@ public final class WhisperKitEngine: TranscriptionEngine, @unchecked Sendable {
     public let id: TranscriptionEngineID = .whisperCpp
     public let supportsStreaming = false
 
+    public var isReady: Bool {
+        loadLock.withLock { whisperKit != nil }
+    }
+
     private let modelID: WhisperModelID
     private let modelStore: WhisperModelStore
     private var whisperKit: WhisperKit?

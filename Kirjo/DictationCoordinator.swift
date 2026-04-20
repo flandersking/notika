@@ -212,10 +212,16 @@ final class DictationCoordinator {
             guard let self else { return }
 
             let tStart = Date()
+            let engine = self.resolveTranscriptionEngine()
+            // Wenn Engine noch nicht ready (z.B. erster Whisper-Call, Pre-Warm
+            // noch nicht fertig): Pill zeigt „Initialisiere…" bis Load durch ist.
+            if !engine.isReady {
+                self.overlay.updateState(.initializing(mode: mode))
+                await engine.preWarm()
+            }
             self.overlay.updateState(.transcribing(mode: mode))
 
             do {
-                let engine = self.resolveTranscriptionEngine()
                 let hints = self.dictionaryStore.hintsForLanguage(.german)
                 let transcript: Transcript
                 do {

@@ -44,7 +44,7 @@ struct PillView: View {
                         .frame(width: 18, height: 18)
                         .blur(radius: 3)
                 )
-        case .transcribing, .processing, .inserting:
+        case .initializing, .transcribing, .processing, .inserting:
             ProgressView()
                 .scaleEffect(0.55)
                 .tint(.white)
@@ -59,7 +59,7 @@ struct PillView: View {
     private var waveformTint: Color {
         switch model.state {
         case .recording: return .white
-        case .transcribing, .processing: return Color.white.opacity(0.5)
+        case .initializing, .transcribing, .processing: return Color.white.opacity(0.5)
         case .inserting: return .green
         case .error: return .white
         case .idle: return .white
@@ -70,7 +70,7 @@ struct PillView: View {
     private var backgroundFill: Color {
         switch model.state {
         case .error: return .orange.opacity(0.95)
-        case .recording, .transcribing, .processing, .inserting, .idle:
+        case .recording, .initializing, .transcribing, .processing, .inserting, .idle:
             return .black.opacity(0.92)
         }
     }
@@ -84,6 +84,8 @@ struct PillView: View {
         switch model.state {
         case .recording(let mode):
             return "Aufnahme · \(mode.shortName)"
+        case .initializing:
+            return "Whisper lädt …"
         case .transcribing:
             return "Transkribiere …"
         case .processing:

@@ -41,6 +41,7 @@ public final class PillModel {
     public var activeMode: DictationMode? {
         switch state {
         case .recording(let mode),
+             .initializing(let mode),
              .transcribing(let mode),
              .processing(let mode),
              .inserting(let mode):

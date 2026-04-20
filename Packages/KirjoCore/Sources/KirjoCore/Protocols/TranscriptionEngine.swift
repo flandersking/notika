@@ -25,8 +25,15 @@ public protocol TranscriptionEngine: AnyObject, Sendable {
     /// Default-Implementierung ist no-op — Engines ohne Cold-Start (z. B. Apple)
     /// müssen nichts überschreiben.
     func preWarm() async
+
+    /// Ist die Engine sofort einsatzbereit? Engines ohne Cold-Start (Apple)
+    /// geben `true` zurück. WhisperKit gibt erst nach abgeschlossenem
+    /// Pre-Warm `true` zurück. Wird vom Coordinator genutzt, um der UI
+    /// „Initialisiere…" vs „Transkribiere…" zu signalisieren.
+    var isReady: Bool { get }
 }
 
 public extension TranscriptionEngine {
     func preWarm() async { }
+    var isReady: Bool { true }
 }

@@ -140,8 +140,10 @@ struct WhisperModelRow: View {
         let p = modelStore.startDownload(model)
         progress = p
         Task { @MainActor in
-            for _ in 0..<7200 {
-                try? await Task.sleep(for: .seconds(1))
+            // Kurzes Polling-Intervall, damit das Download-Complete-Event
+            // ohne 1s-Verzögerung beim User ankommt.
+            for _ in 0..<72000 {
+                try? await Task.sleep(for: .milliseconds(100))
                 if case .completed = p.state {
                     installed = true
                     onChange()
