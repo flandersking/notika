@@ -4,7 +4,7 @@ Manuelle Akzeptanz-Tests vor dem Commit „Phase 1b-2 done".
 
 ## Vorbereitung
 - macOS 26 Tahoe, Apple Silicon
-- Notika frisch installiert oder `defaults delete <bundle-id>` + Neustart
+- Kirjo frisch installiert oder `defaults delete <bundle-id>` + Neustart
 - Internet-Verbindung für Modell-Download
 
 ## Settings → Spracherkennung Tab
@@ -30,7 +30,7 @@ Manuelle Akzeptanz-Tests vor dem Commit „Phase 1b-2 done".
 - [ ] Auto-Detect: deutsches Audio → deutsches Transkript, englisches Audio → englisches Transkript
 
 ## Whisper-Fehler-Fallback
-- [ ] Aktives Modell extern löschen (`rm -rf ~/Library/Application\ Support/Notika/WhisperModels/openai_whisper-base/`)
+- [ ] Aktives Modell extern löschen (`rm -rf ~/Library/Application\ Support/Kirjo/WhisperModels/openai_whisper-base/`)
 - [ ] Diktat starten → Pill „Whisper-Modell nicht geladen" orange → automatisch mit Apple weiter, Text landet trotzdem
 - [ ] `sttEngineChoice` bleibt auf `.whisper(.base)` (nicht auto-rückgesetzt)
 
@@ -43,16 +43,16 @@ Manuelle Akzeptanz-Tests vor dem Commit „Phase 1b-2 done".
 - [ ] Installierte Modelle erscheinen wieder als „installiert"
 
 ## Sicherheit
-- [ ] Console-Logs prüfen (`log stream --predicate 'subsystem == "com.notika.mac" AND category == "Whisper"'`):
+- [ ] Console-Logs prüfen (`log stream --predicate 'subsystem == "com.kirjo.mac" AND category == "Whisper"'`):
   - Modell-IDs, Latenz, Audio-Längen sichtbar
   - Audio-Daten, Transkript-Inhalt NICHT sichtbar
-- [ ] Modell-Dateien im Finder sichtbar in `~/Library/Application Support/Notika/WhisperModels/`
+- [ ] Modell-Dateien im Finder sichtbar in `~/Library/Application Support/Kirjo/WhisperModels/`
 
 ## Build
 - [ ] Build SUCCEEDED, signiert mit Team P7QK554EET
-- [ ] NotikaWhisper-Source enthält keinen `import AppKit` (iOS-Tauglichkeit)
+- [ ] KirjoWhisper-Source enthält keinen `import AppKit` (iOS-Tauglichkeit)
 
 ## Tests
-- [ ] `cd Packages/NotikaCore && swift test` — alle grün
-- [ ] `cd Packages/NotikaWhisper && swift test` — alle grün
-- [ ] `cd Packages/NotikaPostProcessing && swift test` — alle grün
+- [ ] `cd Packages/KirjoCore && swift test` — alle grün
+- [ ] `cd Packages/KirjoWhisper && swift test` — alle grün
+- [ ] `cd Packages/KirjoPostProcessing && swift test` — alle grün

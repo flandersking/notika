@@ -1,4 +1,4 @@
-# Notika
+# Kirjo
 
 Eine macOS-Diktier-App, die Sprache in Text umwandelt und ihn in jede fokussierte Anwendung einfügt. Konzipiert mit drei klar getrennten Modi (1:1, Social Media, Formell), austauschbaren Engines (Apple-nativ oder whisper.cpp / Anthropic Claude) und einer späteren Erweiterung für medizinische Dokumentation.
 
@@ -40,27 +40,23 @@ cd 2604_sag_macos
 xcodegen generate
 
 # In Xcode öffnen
-open Notika.xcworkspace
+open Kirjo.xcworkspace
 ```
 
 ## Projekt-Struktur
 
 ```
-Notika.xcworkspace
-├── Notika/                          # App-Target
+Kirjo.xcworkspace
+├── Kirjo/                          # App-Target
 └── Packages/
-    ├── NotikaCore/                  # Plattform-neutrale Kernlogik
-    ├── NotikaTranscription/         # Apple SpeechAnalyzer Engine
-    ├── NotikaPostProcessing/        # Foundation Models + Anthropic
-    ├── NotikaDictionary/            # Custom-Dictionary-Store
-    ├── NotikaWhisper/               # whisper.cpp Bridge (später)
-    └── NotikaMacOS/                 # AppKit-spezifisch
+    ├── KirjoCore/                  # Plattform-neutrale Kernlogik
+    ├── KirjoTranscription/         # Apple SpeechAnalyzer Engine
+    ├── KirjoPostProcessing/        # Foundation Models + Anthropic
+    ├── KirjoDictionary/            # Custom-Dictionary-Store
+    ├── KirjoWhisper/               # whisper.cpp Bridge (später)
+    └── KirjoMacOS/                 # AppKit-spezifisch
 ```
 
 ## Lizenz
 
 MIT. Siehe [`LICENSE`](LICENSE).
-
-## Warum Notika?
-
-"Notika" ist ein Kunstwort, das markenrechtlich frei ist. Es klingt nach "Notiz" und bekommt durch das `-ika`-Suffix einen klinischen Anklang — ein freundlicher Nebeneffekt für die spätere Medizin-Erweiterung.

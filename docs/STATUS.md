@@ -1,4 +1,4 @@
-# Notika — Status
+# Kirjo — Status
 
 > Letzte Aktualisierung: **2026-04-19** (Phase 1b-6 + Performance-Quick-Wins)
 
@@ -23,7 +23,7 @@
 - E2E-Timing-Logs in `DictationCoordinator` (STT / LLM / Insert / Total)
 - STT-Engine-Cache: WhisperKit wird nicht mehr pro Pipeline neu geladen
 - **Gemessene Werte:** Cold-Start 1.6 s STT → gecacht 0.5 s (−71 %). Total nach Recording-Stop: 1.7-1.8 s bei Whisper+Anthropic Haiku.
-- Logs via `log stream --predicate 'subsystem == "com.notika.mac"' --level info`
+- Logs via `log stream --predicate 'subsystem == "com.kirjo.mac"' --level info`
 
 Nächste Sub-Phase: 1b-5 (Sparkle Auto-Update) oder UX-Feinschliff (Dock-Icon, Close-Verhalten)
 
@@ -36,22 +36,22 @@ Nächste Sub-Phase: 1b-5 (Sparkle Auto-Update) oder UX-Feinschliff (Dock-Icon, C
 - `DictionaryHintsCache` (thread-safer NSLock-Wrapper) → `nonisolated hintsForLanguage` für STT-Engines
 - DictationCoordinator reicht Hints an Apple SpeechAnalyzer und WhisperKit weiter
 - Limit 100 Hints pro Sprache (neueste via updatedAt)
-- 94 Tests grün (30 NotikaCore + 19 NotikaDictionary + 15 NotikaWhisper + 30 NotikaPostProcessing)
+- 94 Tests grün (30 KirjoCore + 19 KirjoDictionary + 15 KirjoWhisper + 30 KirjoPostProcessing)
 - Build SUCCEEDED
 
 Nächste Sub-Phase: 1b-6 (Modifier-only Hotkeys) oder 1b-4 (Toggle-Trigger-Modus) oder 1b-5 (Sparkle)
 
 ## Phase 1b-2 abgeschlossen (2026-04-18)
 
-- WhisperKit (0.18.0) als SPM-Dependency in NotikaWhisper
+- WhisperKit (0.18.0) als SPM-Dependency in KirjoWhisper
 - 3 kuratierte Whisper-Modelle (Base / Turbo / Large V3) downloadbar
 - Eigener Settings-Tab „Spracherkennung" mit Engine-Picker + Modell-Liste
 - Confirm-Sheet nach Download („Als Standard verwenden?")
 - Auto-Sprach-Detection (Deutsch/Englisch)
 - Auto-Fallback auf Apple SpeechAnalyzer bei Whisper-Fehler
 - 100 % offline nach Modell-Download (DSGVO-Story für Phase 2)
-- iOS-tauglich (kein AppKit in NotikaWhisper)
-- 71 Tests grün (26 NotikaCore + 15 NotikaWhisper + 30 NotikaPostProcessing)
+- iOS-tauglich (kein AppKit in KirjoWhisper)
+- 71 Tests grün (26 KirjoCore + 15 KirjoWhisper + 30 KirjoPostProcessing)
 - Build SUCCEEDED
 
 Nächste Sub-Phase: 1b-3 (SwiftData-Dictionary)
@@ -66,7 +66,7 @@ Nächste Sub-Phase: 1b-3 (SwiftData-Dictionary)
 - Migration vom Phase-1a-Default sauber
 - Onboarding-Step + First-Use-Hint
 - Pill-Fehler-State (orange) für KI-Helfer-Offline
-- 43 Unit-Tests (14 NotikaCore + 29 NotikaPostProcessing) grün
+- 43 Unit-Tests (14 KirjoCore + 29 KirjoPostProcessing) grün
 - Build SUCCEEDED, signiert mit Team P7QK554EET
 
 Nächste Sub-Phase: 1b-2 (whisper.cpp lokale STT)
@@ -87,7 +87,7 @@ Nächste Sub-Phase: 1b-2 (whisper.cpp lokale STT)
 ## Aktuelle Settings-Defaults
 
 - LLM: **Kein LLM — Rohtranskript** (bewusst, weil Foundation Models 3B zu schwach ist)
-- Prompts: meine drei Defaults in `Packages/NotikaPostProcessing/Sources/NotikaPostProcessing/Prompts/`
+- Prompts: meine drei Defaults in `Packages/KirjoPostProcessing/Sources/KirjoPostProcessing/Prompts/`
 - Sprache: Deutsch
 - Trigger: Push-to-Talk
 
