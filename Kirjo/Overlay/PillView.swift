@@ -19,15 +19,10 @@ struct PillView: View {
         }
         .padding(.horizontal, 18)
         .padding(.vertical, 10)
-        .background(
-            Capsule()
-                .fill(backgroundFill)
-                .shadow(color: .black.opacity(0.35), radius: 14, y: 6)
-        )
-        .overlay(
-            Capsule()
-                .stroke(.white.opacity(0.1), lineWidth: 1)
-        )
+        .background(Capsule().fill(backgroundFill))
+        .overlay(Capsule().stroke(.white.opacity(0.1), lineWidth: 1))
+        .compositingGroup()
+        .shadow(color: .black.opacity(0.35), radius: 14, y: 6)
         .animation(.easeInOut(duration: 0.2), value: isErrorState)
         .opacity(model.isVisible ? 1 : 0)
         .scaleEffect(model.isVisible ? 1 : 0.92)
