@@ -1,5 +1,5 @@
 import SwiftUI
-import NotikaMacOS
+import KirjoMacOS
 
 struct PermissionsStep: View {
     @Bindable var checker: PermissionsChecker
@@ -10,7 +10,7 @@ struct PermissionsStep: View {
             VStack(alignment: .leading, spacing: 6) {
                 Text("Berechtigungen")
                     .font(.largeTitle).bold()
-                Text("Notika braucht drei Freigaben, damit alles funktioniert.")
+                Text("Kirjo braucht drei Freigaben, damit alles funktioniert.")
                     .foregroundStyle(.secondary)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -23,7 +23,7 @@ struct PermissionsStep: View {
                 VStack(spacing: 14) {
                     PermissionCard(
                         title: "Mikrofon",
-                        description: "Damit Notika aufnehmen kann, was du sagst.",
+                        description: "Damit Kirjo aufnehmen kann, was du sagst.",
                         icon: "mic.fill",
                         status: checker.microphone,
                         primaryAction: .init(
@@ -57,7 +57,7 @@ struct PermissionsStep: View {
 
                     PermissionCard(
                         title: "Bedienungshilfen",
-                        description: "Erlaubt Notika, Text direkt in die fokussierte App einzufügen.",
+                        description: "Erlaubt Kirjo, Text direkt in die fokussierte App einzufügen.",
                         icon: "keyboard",
                         status: checker.accessibility,
                         primaryAction: .init(

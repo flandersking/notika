@@ -14,7 +14,7 @@ struct AITab: View {
 
     private var pipelineBanner: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("So arbeitet Notika in zwei Schritten")
+            Text("So arbeitet Kirjo in zwei Schritten")
                 .font(.headline)
             HStack(spacing: 12) {
                 pipelineBox(icon: "mic.fill", title: "Du sprichst", subtitle: nil, color: .blue)

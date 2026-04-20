@@ -1,6 +1,6 @@
 import AppKit
 import SwiftUI
-import NotikaCore
+import KirjoCore
 import os
 
 /// Verwaltet das NSPanel, das die Pill hostet. Das Fenster schwebt über
@@ -9,7 +9,7 @@ import os
 final class OverlayController {
     static let shared = OverlayController()
 
-    private let logger = Logger(subsystem: "com.notika.mac", category: "Overlay")
+    private let logger = Logger(subsystem: "de.dymny.kirjo.mac", category: "Overlay")
     private var panel: NSPanel?
 
     let model = PillModel()

@@ -8,28 +8,28 @@ public final class SettingsStore {
 
     // Stored Properties (observable von SwiftUI). UserDefaults-Persist in didSet.
     public var hotkeyConfigLiteral: ModeHotkeyConfig {
-        didSet { saveHotkeyConfig(hotkeyConfigLiteral, key: "notika.hotkey.config.literal") }
+        didSet { saveHotkeyConfig(hotkeyConfigLiteral, key: "kirjo.hotkey.config.literal") }
     }
     public var hotkeyConfigSocial: ModeHotkeyConfig {
-        didSet { saveHotkeyConfig(hotkeyConfigSocial, key: "notika.hotkey.config.social") }
+        didSet { saveHotkeyConfig(hotkeyConfigSocial, key: "kirjo.hotkey.config.social") }
     }
     public var hotkeyConfigFormal: ModeHotkeyConfig {
-        didSet { saveHotkeyConfig(hotkeyConfigFormal, key: "notika.hotkey.config.formal") }
+        didSet { saveHotkeyConfig(hotkeyConfigFormal, key: "kirjo.hotkey.config.formal") }
     }
 
     public init(defaults: UserDefaults = .standard) {
         self.defaults = defaults
         Self.migrateIfNeeded(defaults: defaults)
-        self.hotkeyConfigLiteral = Self.loadHotkeyConfigStatic(defaults: defaults, key: "notika.hotkey.config.literal")
-        self.hotkeyConfigSocial  = Self.loadHotkeyConfigStatic(defaults: defaults, key: "notika.hotkey.config.social")
-        self.hotkeyConfigFormal  = Self.loadHotkeyConfigStatic(defaults: defaults, key: "notika.hotkey.config.formal")
+        self.hotkeyConfigLiteral = Self.loadHotkeyConfigStatic(defaults: defaults, key: "kirjo.hotkey.config.literal")
+        self.hotkeyConfigSocial  = Self.loadHotkeyConfigStatic(defaults: defaults, key: "kirjo.hotkey.config.social")
+        self.hotkeyConfigFormal  = Self.loadHotkeyConfigStatic(defaults: defaults, key: "kirjo.hotkey.config.formal")
     }
 
     // MARK: - Global LLM-Wahl
 
     public var globalLLMChoice: LLMChoice {
         get {
-            guard let data = defaults.data(forKey: "notika.settings.globalLLMChoice"),
+            guard let data = defaults.data(forKey: "kirjo.settings.globalLLMChoice"),
                   let value = try? JSONDecoder().decode(LLMChoice.self, from: data)
             else {
                 return .appleFoundationModels   // Phase-1b-1-Default (Wahl 6b)
@@ -38,7 +38,7 @@ public final class SettingsStore {
         }
         set {
             if let data = try? JSONEncoder().encode(newValue) {
-                defaults.set(data, forKey: "notika.settings.globalLLMChoice")
+                defaults.set(data, forKey: "kirjo.settings.globalLLMChoice")
             }
         }
     }
@@ -47,7 +47,7 @@ public final class SettingsStore {
 
     public var sttEngineChoice: STTEngineChoice {
         get {
-            guard let data = defaults.data(forKey: "notika.settings.sttEngineChoice"),
+            guard let data = defaults.data(forKey: "kirjo.settings.sttEngineChoice"),
                   let value = try? JSONDecoder().decode(STTEngineChoice.self, from: data)
             else {
                 return .apple
@@ -56,7 +56,7 @@ public final class SettingsStore {
         }
         set {
             if let data = try? JSONEncoder().encode(newValue) {
-                defaults.set(data, forKey: "notika.settings.sttEngineChoice")
+                defaults.set(data, forKey: "kirjo.settings.sttEngineChoice")
             }
         }
     }
@@ -115,14 +115,14 @@ public final class SettingsStore {
     }
 
     private func overrideKey(for mode: DictationMode) -> String {
-        "notika.settings.modeOverride.\(mode.rawValue)"
+        "kirjo.settings.modeOverride.\(mode.rawValue)"
     }
 
     // MARK: - Migration vom Phase-1a-rawString-Format
 
     private static func migrateIfNeeded(defaults: UserDefaults) {
-        let oldKey = "notika.settings.llmChoice"
-        let newKey = "notika.settings.globalLLMChoice"
+        let oldKey = "kirjo.settings.llmChoice"
+        let newKey = "kirjo.settings.globalLLMChoice"
         guard defaults.data(forKey: newKey) == nil,
               let oldRaw = defaults.string(forKey: oldKey)
         else { return }

@@ -15,7 +15,7 @@ public enum AudioRecorderError: Error, Sendable {
 /// seinen Tap-Callback auf einem Realtime-Audio-Thread aufruft. Alle
 /// Mutationen sind durch `stateLock` abgesichert.
 public final class AudioRecorder: @unchecked Sendable {
-    private let logger = Logger(subsystem: "com.notika.mac", category: "AudioRecorder")
+    private let logger = Logger(subsystem: "de.dymny.kirjo.mac", category: "AudioRecorder")
     private let engine = AVAudioEngine()
     private let stateLock = NSLock()
 
@@ -57,7 +57,7 @@ public final class AudioRecorder: @unchecked Sendable {
         logger.info("Input format: \(inputFormat, privacy: .public)")
 
         let url = FileManager.default.temporaryDirectory
-            .appendingPathComponent("notika-\(UUID().uuidString).caf")
+            .appendingPathComponent("kirjo-\(UUID().uuidString).caf")
 
         // Wir schreiben im nativen Eingabe-Format des Mikrofons (meistens
         // 48 kHz, 32-Bit Float, 1 Kanal). Das vermeidet fehlerhafte Konvertie-

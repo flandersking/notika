@@ -1,5 +1,5 @@
 import SwiftUI
-import NotikaCore
+import KirjoCore
 
 struct HistoryTab: View {
     @State private var historyStore = HistoryStore()

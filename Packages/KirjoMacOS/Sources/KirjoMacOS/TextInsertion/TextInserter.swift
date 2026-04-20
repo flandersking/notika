@@ -57,7 +57,7 @@ public final class TextInserter {
         }
     }
 
-    private let logger = Logger(subsystem: "com.notika.mac", category: "TextInserter")
+    private let logger = Logger(subsystem: "de.dymny.kirjo.mac", category: "TextInserter")
     private let options: Options
 
     public init(options: Options = .init()) {
@@ -82,7 +82,7 @@ public final class TextInserter {
         // Keyboard-Events. Dann bleibt nur das manuelle Paste durch den User.
         guard AXIsProcessTrusted() else {
             logger.info("Accessibility nicht trusted — nur Clipboard gesetzt")
-            return .clipboardOnly(reason: "Bitte Bedienungshilfen für Notika freigeben (Systemeinstellungen → Privatsphäre & Sicherheit → Bedienungshilfen). Text liegt solange in der Zwischenablage.")
+            return .clipboardOnly(reason: "Bitte Bedienungshilfen für Kirjo freigeben (Systemeinstellungen → Privatsphäre & Sicherheit → Bedienungshilfen). Text liegt solange in der Zwischenablage.")
         }
 
         // 3) Cmd+V senden (kann via Options abgeschaltet werden, z.B. für Tests).

@@ -15,11 +15,11 @@ public enum KirjoError: LocalizedError, Sendable {
     public var errorDescription: String? {
         switch self {
         case .microphonePermissionDenied:
-            return "Notika braucht Zugriff auf das Mikrofon. Bitte in den Systemeinstellungen freigeben."
+            return "Kirjo braucht Zugriff auf das Mikrofon. Bitte in den Systemeinstellungen freigeben."
         case .speechRecognitionPermissionDenied:
-            return "Notika braucht Zugriff auf die Spracherkennung. Bitte in den Systemeinstellungen freigeben."
+            return "Kirjo braucht Zugriff auf die Spracherkennung. Bitte in den Systemeinstellungen freigeben."
         case .accessibilityPermissionDenied:
-            return "Notika braucht Bedienungshilfen-Zugriff, um Text in andere Apps einzufügen. Bitte in den Systemeinstellungen freigeben."
+            return "Kirjo braucht Bedienungshilfen-Zugriff, um Text in andere Apps einzufügen. Bitte in den Systemeinstellungen freigeben."
         case .audioRecorderUnavailable:
             return "Audioaufnahme ist aktuell nicht verfügbar."
         case .transcriptionFailed(let reason):

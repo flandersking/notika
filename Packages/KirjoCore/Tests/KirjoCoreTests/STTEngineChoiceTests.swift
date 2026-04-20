@@ -32,14 +32,14 @@ final class STTEngineChoiceTests: XCTestCase {
 
     @MainActor
     func test_settingsStore_sttEngineChoice_defaults_to_apple() {
-        let defaults = UserDefaults(suiteName: "test.notika.\(UUID().uuidString)")!
+        let defaults = UserDefaults(suiteName: "test.kirjo.\(UUID().uuidString)")!
         let store = SettingsStore(defaults: defaults)
         XCTAssertEqual(store.sttEngineChoice, .apple)
     }
 
     @MainActor
     func test_settingsStore_sttEngineChoice_persists_whisperTurbo() {
-        let defaults = UserDefaults(suiteName: "test.notika.\(UUID().uuidString)")!
+        let defaults = UserDefaults(suiteName: "test.kirjo.\(UUID().uuidString)")!
         let store = SettingsStore(defaults: defaults)
         store.sttEngineChoice = .whisper(.turbo)
         let store2 = SettingsStore(defaults: defaults)

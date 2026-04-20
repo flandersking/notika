@@ -1,6 +1,6 @@
 import SwiftUI
-import NotikaCore
-import NotikaPostProcessing
+import KirjoCore
+import KirjoPostProcessing
 
 struct AnthropicProviderRow: View {
     @Binding var model: AnthropicModel

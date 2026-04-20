@@ -4,7 +4,7 @@ import XCTest
 @MainActor
 final class SettingsStoreHotkeyConfigTests: XCTestCase {
     private var defaults: UserDefaults!
-    private let suiteName = "notika.tests.hotkey"
+    private let suiteName = "kirjo.tests.hotkey"
 
     override func setUp() async throws {
         defaults = UserDefaults(suiteName: suiteName)

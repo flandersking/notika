@@ -6,13 +6,13 @@ import WhisperKit
 @MainActor
 public final class WhisperModelStore {
     public let modelsDirectory: URL
-    private let logger = Logger(subsystem: "com.notika.mac", category: "Whisper")
+    private let logger = Logger(subsystem: "de.dymny.kirjo.mac", category: "Whisper")
     private var activeProgresses: [WhisperModelID: WhisperModelDownloadProgress] = [:]
     private var activeTasks: [WhisperModelID: Task<Void, Never>] = [:]
 
     public init() {
         let appSupport = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
-        let dir = appSupport.appendingPathComponent("Notika/WhisperModels")
+        let dir = appSupport.appendingPathComponent("Kirjo/WhisperModels")
         try? FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
         self.modelsDirectory = dir
         // One-time Cleanup alter flacher Layout-Reste aus Phase-1b-2-pre-hotfix

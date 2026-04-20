@@ -3,9 +3,9 @@ import KeyboardShortcuts
 import KirjoCore
 
 public extension KeyboardShortcuts.Name {
-    static let modeLiteral = Self("notika.mode.literal")
-    static let modeSocial = Self("notika.mode.social")
-    static let modeFormal = Self("notika.mode.formal")
+    static let modeLiteral = Self("kirjo.mode.literal")
+    static let modeSocial = Self("kirjo.mode.social")
+    static let modeFormal = Self("kirjo.mode.formal")
 }
 
 public enum HotkeyBinding {

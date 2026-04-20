@@ -12,7 +12,7 @@ public enum HotkeyEvent: Sendable, Equatable {
 public final class HotkeyManager {
     public typealias TriggerMode = KirjoCore.TriggerMode
 
-    private let logger = Logger(subsystem: "com.notika.mac", category: "Hotkeys")
+    private let logger = Logger(subsystem: "de.dymny.kirjo.mac", category: "Hotkeys")
     private let continuation: AsyncStream<HotkeyEvent>.Continuation
     public let events: AsyncStream<HotkeyEvent>
 

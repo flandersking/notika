@@ -1,6 +1,6 @@
 import SwiftUI
-import NotikaCore
-import NotikaPostProcessing
+import KirjoCore
+import KirjoPostProcessing
 
 struct PromptsTab: View {
     @State private var selectedMode: DictationMode = .literal

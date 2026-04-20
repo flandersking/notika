@@ -13,7 +13,7 @@ public final class AppleSpeechAnalyzerEngine: TranscriptionEngine {
     public let id: TranscriptionEngineID = .appleSpeechAnalyzer
     public let supportsStreaming = false
 
-    private let logger = Logger(subsystem: "com.notika.mac", category: "Transcription.Apple")
+    private let logger = Logger(subsystem: "de.dymny.kirjo.mac", category: "Transcription.Apple")
 
     public init() {}
 

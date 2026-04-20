@@ -1,12 +1,12 @@
 import AppKit
 import SwiftUI
-import NotikaCore
-import NotikaMacOS
+import KirjoCore
+import KirjoMacOS
 import os
 
 @MainActor
 final class AppDelegate: NSObject, NSApplicationDelegate {
-    static let logger = Logger(subsystem: "com.notika.mac", category: "AppDelegate")
+    static let logger = Logger(subsystem: "de.dymny.kirjo.mac", category: "AppDelegate")
 
     /// Singleton-Zugriff für SwiftUI-Views, die das Onboarding öffnen wollen.
     static private(set) weak var shared: AppDelegate?
@@ -21,7 +21,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
         // Sicherstellen, dass die App als Menüleisten-Agent läuft (kein Dock-Icon).
         NSApp.setActivationPolicy(.accessory)
-        Self.logger.info("Notika gestartet (accessory mode)")
+        Self.logger.info("Kirjo gestartet (accessory mode)")
 
         // Hotkey- und Audio-Orchestrierung starten.
         coordinator.start()
@@ -32,7 +32,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             await coordinator.preWarm()
         }
 
-        let hasCompleted = UserDefaults.standard.bool(forKey: "notika.hasCompletedOnboarding")
+        let hasCompleted = UserDefaults.standard.bool(forKey: "kirjo.hasCompletedOnboarding")
 
         // Zeige das Onboarding automatisch beim ersten Start oder wenn TCC nach
         // einem Rebuild die Berechtigungen invalidiert hat.
@@ -68,7 +68,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         window.styleMask = [.titled, .closable, .fullSizeContentView]
         window.titlebarAppearsTransparent = true
         window.titleVisibility = .hidden
-        window.title = "Willkommen bei Notika"
+        window.title = "Willkommen bei Kirjo"
         window.setContentSize(NSSize(width: 560, height: 480))
         window.center()
         window.isReleasedWhenClosed = false

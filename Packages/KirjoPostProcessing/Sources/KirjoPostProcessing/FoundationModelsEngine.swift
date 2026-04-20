@@ -10,7 +10,7 @@ import os
 public final class FoundationModelsEngine: PostProcessingEngine {
     public let id: PostProcessingEngineID = .appleFoundationModels
 
-    private let logger = Logger(subsystem: "com.notika.mac", category: "PostProcessing.Apple")
+    private let logger = Logger(subsystem: "de.dymny.kirjo.mac", category: "PostProcessing.Apple")
     private let model = SystemLanguageModel.default
 
     public init() {}

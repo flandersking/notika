@@ -1,6 +1,6 @@
 import SwiftUI
-import NotikaCore
-import NotikaPostProcessing
+import KirjoCore
+import KirjoPostProcessing
 
 struct LLMSetupStep: View {
     let onContinue: () -> Void
@@ -70,7 +70,7 @@ struct LLMSetupStep: View {
             HStack {
                 Button("Überspringen") {
                     settings.globalLLMChoice = .appleFoundationModels   // Wahl 6b
-                    UserDefaults.standard.set(false, forKey: "notika.onboarding.llmStepCompleted")
+                    UserDefaults.standard.set(false, forKey: "kirjo.onboarding.llmStepCompleted")
                     onSkip()
                 }
                 Spacer()
@@ -131,7 +131,7 @@ struct LLMSetupStep: View {
             guard !ollamaModel.isEmpty else { inlineError = "Bitte ein Modell wählen"; return }
             settings.globalLLMChoice = .ollama(modelID: ollamaModel)
         }
-        UserDefaults.standard.set(true, forKey: "notika.onboarding.llmStepCompleted")
+        UserDefaults.standard.set(true, forKey: "kirjo.onboarding.llmStepCompleted")
         onContinue()
     }
 }

@@ -32,7 +32,7 @@ public final class PermissionsChecker {
     public private(set) var speechRecognition: PermissionStatus = .unknown
     public private(set) var accessibility: PermissionStatus = .unknown
 
-    private let logger = Logger(subsystem: "com.notika.mac", category: "Permissions")
+    private let logger = Logger(subsystem: "de.dymny.kirjo.mac", category: "Permissions")
     private var pollTask: Task<Void, Never>?
 
     public init() {

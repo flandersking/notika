@@ -8,7 +8,7 @@ final class CostStoreTests: XCTestCase {
 
     @MainActor
     override func setUp() async throws {
-        let suiteName = "test.notika.\(UUID().uuidString)"
+        let suiteName = "test.kirjo.\(UUID().uuidString)"
         defaults = UserDefaults(suiteName: suiteName)!
         store = CostStore(defaults: defaults, calendar: Calendar(identifier: .gregorian))
     }

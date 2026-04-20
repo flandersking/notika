@@ -9,7 +9,7 @@ public enum KeychainProvider: String, Sendable {
 
 public enum KeychainStore {
     private static func service(for provider: KeychainProvider) -> String {
-        "app.notika.apikey.\(provider.rawValue)"
+        "app.kirjo.apikey.\(provider.rawValue)"
     }
 
     public static func setKey(_ key: String?, for provider: KeychainProvider) {

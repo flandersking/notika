@@ -55,7 +55,7 @@ public enum PromptStore {
     // MARK: - Hilfen
 
     private static func userDefaultsKey(for mode: DictationMode) -> String {
-        "notika.prompts.custom.\(mode.rawValue)"
+        "kirjo.prompts.custom.\(mode.rawValue)"
     }
 
     private static func fallbackPrompt(for mode: DictationMode) -> String {

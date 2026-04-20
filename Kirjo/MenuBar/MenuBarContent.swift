@@ -1,17 +1,17 @@
 import SwiftUI
-import NotikaCore
-import NotikaPostProcessing
+import KirjoCore
+import KirjoPostProcessing
 
 struct MenuBarContent: View {
     @Environment(\.openSettings) private var openSettings
-    @AppStorage("notika.hasCompletedOnboarding") private var hasCompletedOnboarding = false
+    @AppStorage("kirjo.hasCompletedOnboarding") private var hasCompletedOnboarding = false
     @State private var costStore = CostStore()
     @State private var todaySnap: CostSnapshot = .init()
     @State private var monthSnap: CostSnapshot = .init()
 
     var body: some View {
         Group {
-            Text("Notika")
+            Text("Kirjo")
                 .font(.headline)
 
             Divider()
@@ -45,7 +45,7 @@ struct MenuBarContent: View {
 
             Divider()
 
-            Button("Notika beenden") { NSApp.terminate(nil) }
+            Button("Kirjo beenden") { NSApp.terminate(nil) }
                 .keyboardShortcut("q", modifiers: [.command])
         }
         .onAppear { refresh() }

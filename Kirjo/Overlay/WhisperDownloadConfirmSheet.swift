@@ -1,5 +1,5 @@
 import SwiftUI
-import NotikaCore
+import KirjoCore
 
 struct WhisperDownloadConfirmSheet: View {
     let model: WhisperModelID

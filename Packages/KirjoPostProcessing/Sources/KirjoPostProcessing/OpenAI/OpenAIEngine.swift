@@ -8,7 +8,7 @@ public final class OpenAIEngine: PostProcessingEngine {
     private let model: OpenAIModel
     private let apiKey: String
     private let client: LLMHTTPClient
-    private let logger = Logger(subsystem: "com.notika.mac", category: "PostProcessing.OpenAI")
+    private let logger = Logger(subsystem: "de.dymny.kirjo.mac", category: "PostProcessing.OpenAI")
 
     public init(model: OpenAIModel, apiKey: String, httpClient: LLMHTTPClient = LLMHTTPClient()) {
         self.model = model

@@ -1,6 +1,6 @@
 import SwiftUI
-import NotikaCore
-import NotikaWhisper
+import KirjoCore
+import KirjoWhisper
 
 struct WhisperModelRow: View {
     let model: WhisperModelID

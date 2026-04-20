@@ -13,7 +13,7 @@ public enum ModifierHotkeyTapEvent: Sendable, Equatable {
 /// ModifierHotkeyTapState mit CoreGraphics-Events verheiratet.
 @MainActor
 public final class ModifierHotkeyTap {
-    private let logger = Logger(subsystem: "com.notika.mac", category: "ModifierTap")
+    private let logger = Logger(subsystem: "de.dymny.kirjo.mac", category: "ModifierTap")
 
     /// Millisekunden, die ein Modifier gehalten werden muss, bevor Press feuert.
     public static let holdThresholdMillis: Int = 100

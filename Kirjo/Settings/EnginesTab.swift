@@ -1,6 +1,6 @@
 import SwiftUI
-import NotikaCore
-import NotikaPostProcessing
+import KirjoCore
+import KirjoPostProcessing
 
 /// Provider-Kategorie für den Top-Picker. Mappt auf konkrete LLMChoice-cases.
 enum ProviderKind: String, CaseIterable, Identifiable {

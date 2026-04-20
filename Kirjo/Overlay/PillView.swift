@@ -1,5 +1,5 @@
 import SwiftUI
-import NotikaCore
+import KirjoCore
 
 struct PillView: View {
     @Bindable var model: PillModel

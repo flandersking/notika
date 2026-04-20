@@ -1,11 +1,11 @@
 import AppKit
 import Foundation
-import NotikaCore
-import NotikaMacOS
-import NotikaPostProcessing
-import NotikaTranscription
-import NotikaDictionary
-import NotikaWhisper
+import KirjoCore
+import KirjoMacOS
+import KirjoPostProcessing
+import KirjoTranscription
+import KirjoDictionary
+import KirjoWhisper
 import os
 
 /// Orchestriert den Diktat-Flow. Phase 1a Schritt 4:
@@ -13,7 +13,7 @@ import os
 /// Post-Processing und Text-Insertion folgen in Schritt 5 und 6.
 @MainActor
 final class DictationCoordinator {
-    private let logger = Logger(subsystem: "com.notika.mac", category: "Coordinator")
+    private let logger = Logger(subsystem: "de.dymny.kirjo.mac", category: "Coordinator")
     private let hotkeyManager = HotkeyManager()
     private let recorder = AudioRecorder()
     private let overlay = OverlayController.shared
@@ -89,7 +89,7 @@ final class DictationCoordinator {
         }
         // UI-Änderungen im Kurzbefehle-Tab triggern Reconfigure
         NotificationCenter.default.addObserver(
-            forName: .notikaHotkeyConfigChanged,
+            forName: .kirjoHotkeyConfigChanged,
             object: nil,
             queue: .main
         ) { [weak self] _ in
@@ -125,7 +125,7 @@ final class DictationCoordinator {
         levelsTask?.cancel()
         pipelineTask?.cancel()
         hotkeyManager.stop()
-        NotificationCenter.default.removeObserver(self, name: .notikaHotkeyConfigChanged, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .kirjoHotkeyConfigChanged, object: nil)
     }
 
     // MARK: - Event-Handling
@@ -321,10 +321,10 @@ final class DictationCoordinator {
     /// Zeigt einmalig den First-Use-Hint, wenn der Onboarding-Step geskippt wurde
     /// und der User Mode 2 oder 3 nutzt.
     private func maybeShowFirstUseHint(mode: DictationMode) {
-        let stepCompleted = UserDefaults.standard.bool(forKey: "notika.onboarding.llmStepCompleted")
-        let alreadyShown  = UserDefaults.standard.bool(forKey: "notika.hint.llmShown")
+        let stepCompleted = UserDefaults.standard.bool(forKey: "kirjo.onboarding.llmStepCompleted")
+        let alreadyShown  = UserDefaults.standard.bool(forKey: "kirjo.hint.llmShown")
         guard !stepCompleted, !alreadyShown, mode != .literal else { return }
-        UserDefaults.standard.set(true, forKey: "notika.hint.llmShown")
+        UserDefaults.standard.set(true, forKey: "kirjo.hint.llmShown")
         AppDelegate.shared?.showLLMHintSheet()
     }
 }

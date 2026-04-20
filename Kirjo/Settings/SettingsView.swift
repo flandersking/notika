@@ -1,8 +1,8 @@
 import SwiftUI
 import AppKit
 import KeyboardShortcuts
-import NotikaCore
-import NotikaMacOS
+import KirjoCore
+import KirjoMacOS
 import ApplicationServices
 
 struct SettingsView: View {
@@ -39,7 +39,7 @@ struct SettingsView: View {
 /// Konfiguration ändert. Der DictationCoordinator hört darauf und verdrahtet den
 /// ModifierHotkeyTap live neu.
 extension Notification.Name {
-    static let notikaHotkeyConfigChanged = Notification.Name("notika.hotkey.config.changed")
+    static let kirjoHotkeyConfigChanged = Notification.Name("kirjo.hotkey.config.changed")
 }
 
 struct HotkeysTab: View {
@@ -56,7 +56,7 @@ struct HotkeysTab: View {
                         VStack(alignment: .leading, spacing: 6) {
                             Text("Bedienungshilfen nicht aktiv")
                                 .font(.headline)
-                            Text("Damit Modifier-Trigger (Fn / Rechte ⌘ / Rechte ⌥) funktionieren, musst du Notika in den Systemeinstellungen unter **Datenschutz & Sicherheit → Bedienungshilfen** aktivieren. Die klassischen Tastenkombis funktionieren auch ohne.")
+                            Text("Damit Modifier-Trigger (Fn / Rechte ⌘ / Rechte ⌥) funktionieren, musst du Kirjo in den Systemeinstellungen unter **Datenschutz & Sicherheit → Bedienungshilfen** aktivieren. Die klassischen Tastenkombis funktionieren auch ohne.")
                                 .font(.caption)
                             Button("Systemeinstellungen öffnen") {
                                 if let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility") {
@@ -130,7 +130,7 @@ struct HotkeysTab: View {
                 var config = settings.hotkeyConfig(for: mode)
                 config.modifierTrigger = newValue
                 settings.setHotkeyConfig(config, for: mode)
-                NotificationCenter.default.post(name: .notikaHotkeyConfigChanged, object: nil)
+                NotificationCenter.default.post(name: .kirjoHotkeyConfigChanged, object: nil)
             }
         )
     }
@@ -145,7 +145,7 @@ struct AboutTab: View {
             Image(systemName: "waveform.badge.mic")
                 .font(.system(size: 48))
                 .foregroundStyle(.tint)
-            Text("Notika")
+            Text("Kirjo")
                 .font(.title)
                 .bold()
             Text("Version 0.1.0")

@@ -1,5 +1,5 @@
 import Foundation
-import NotikaCore
+import KirjoCore
 import Observation
 
 /// State-Model, das die Pill rendert. Audio-Level und DictationState

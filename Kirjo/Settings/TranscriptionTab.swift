@@ -1,7 +1,7 @@
 import AppKit
 import SwiftUI
-import NotikaCore
-import NotikaWhisper
+import KirjoCore
+import KirjoWhisper
 
 struct TranscriptionTab: View {
     @State private var settings = SettingsStore()
@@ -51,7 +51,7 @@ struct TranscriptionTab: View {
                         .monospacedDigit()
                 }
             } footer: {
-                Text("Modelle liegen in ~/Library/Application Support/Notika/WhisperModels/. Du kannst den ganzen Ordner gefahrlos im Finder löschen — Apple SpeechAnalyzer funktioniert weiter.")
+                Text("Modelle liegen in ~/Library/Application Support/Kirjo/WhisperModels/. Du kannst den ganzen Ordner gefahrlos im Finder löschen — Apple SpeechAnalyzer funktioniert weiter.")
                     .font(.footnote)
                     .foregroundStyle(.secondary)
             }

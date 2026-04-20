@@ -8,7 +8,7 @@ public final class GoogleEngine: PostProcessingEngine {
     private let model: GoogleModel
     private let apiKey: String
     private let client: LLMHTTPClient
-    private let logger = Logger(subsystem: "com.notika.mac", category: "PostProcessing.Google")
+    private let logger = Logger(subsystem: "de.dymny.kirjo.mac", category: "PostProcessing.Google")
 
     public init(model: GoogleModel, apiKey: String, httpClient: LLMHTTPClient = LLMHTTPClient()) {
         self.model = model

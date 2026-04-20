@@ -8,7 +8,7 @@ public final class OllamaEngine: PostProcessingEngine {
     private let modelID: String
     private let baseURL: URL
     private let client: LLMHTTPClient
-    private let logger = Logger(subsystem: "com.notika.mac", category: "PostProcessing.Ollama")
+    private let logger = Logger(subsystem: "de.dymny.kirjo.mac", category: "PostProcessing.Ollama")
 
     public init(modelID: String,
                 baseURL: URL = URL(string: "http://localhost:11434")!,

@@ -1,6 +1,6 @@
 import SwiftUI
 import AppKit
-import NotikaCore
+import KirjoCore
 
 struct HistoryDetailSheet: View {
     let entry: DictationHistoryEntry

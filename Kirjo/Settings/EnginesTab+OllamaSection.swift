@@ -1,5 +1,5 @@
 import SwiftUI
-import NotikaPostProcessing
+import KirjoPostProcessing
 
 struct OllamaSection: View {
     @Binding var modelID: String

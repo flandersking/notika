@@ -31,7 +31,7 @@ final class LLMChoiceTests: XCTestCase {
 
     @MainActor
     func test_effectiveChoice_withoutOverride_returnsGlobal() {
-        let defaults = UserDefaults(suiteName: "test.notika.\(UUID().uuidString)")!
+        let defaults = UserDefaults(suiteName: "test.kirjo.\(UUID().uuidString)")!
         let store = SettingsStore(defaults: defaults)
         store.globalLLMChoice = .anthropic(.haiku45)
         XCTAssertEqual(store.effectiveChoice(for: .literal), .anthropic(.haiku45))
@@ -39,7 +39,7 @@ final class LLMChoiceTests: XCTestCase {
 
     @MainActor
     func test_effectiveChoice_withOverride_returnsOverride() {
-        let defaults = UserDefaults(suiteName: "test.notika.\(UUID().uuidString)")!
+        let defaults = UserDefaults(suiteName: "test.kirjo.\(UUID().uuidString)")!
         let store = SettingsStore(defaults: defaults)
         store.globalLLMChoice = .appleFoundationModels
         store.setOverride(.openAI(.mini54), for: .social)
@@ -49,7 +49,7 @@ final class LLMChoiceTests: XCTestCase {
 
     @MainActor
     func test_setOverride_nil_removesOverride() {
-        let defaults = UserDefaults(suiteName: "test.notika.\(UUID().uuidString)")!
+        let defaults = UserDefaults(suiteName: "test.kirjo.\(UUID().uuidString)")!
         let store = SettingsStore(defaults: defaults)
         store.globalLLMChoice = .appleFoundationModels
         store.setOverride(.google(.flash25), for: .formal)
@@ -61,25 +61,25 @@ final class LLMChoiceTests: XCTestCase {
 
     @MainActor
     func test_migration_rawAppleFoundationModels_to_codable() {
-        let suiteName = "test.notika.\(UUID().uuidString)"
+        let suiteName = "test.kirjo.\(UUID().uuidString)"
         let defaults = UserDefaults(suiteName: suiteName)!
-        defaults.set("appleFoundationModels", forKey: "notika.settings.llmChoice")
+        defaults.set("appleFoundationModels", forKey: "kirjo.settings.llmChoice")
         let store = SettingsStore(defaults: defaults)
         XCTAssertEqual(store.globalLLMChoice, .appleFoundationModels)
-        XCTAssertNil(defaults.string(forKey: "notika.settings.llmChoice"))
-        XCTAssertNotNil(defaults.data(forKey: "notika.settings.globalLLMChoice"))
+        XCTAssertNil(defaults.string(forKey: "kirjo.settings.llmChoice"))
+        XCTAssertNotNil(defaults.data(forKey: "kirjo.settings.globalLLMChoice"))
     }
 
     @MainActor
     func test_migration_isIdempotent() {
-        let suiteName = "test.notika.\(UUID().uuidString)"
+        let suiteName = "test.kirjo.\(UUID().uuidString)"
         let defaults = UserDefaults(suiteName: suiteName)!
-        defaults.set("none", forKey: "notika.settings.llmChoice")
+        defaults.set("none", forKey: "kirjo.settings.llmChoice")
         _ = SettingsStore(defaults: defaults)   // erster Init migriert
         _ = SettingsStore(defaults: defaults)   // zweiter Init darf nichts ändern
-        let stored = try? JSONDecoder().decode(LLMChoice.self, from: defaults.data(forKey: "notika.settings.globalLLMChoice")!)
+        let stored = try? JSONDecoder().decode(LLMChoice.self, from: defaults.data(forKey: "kirjo.settings.globalLLMChoice")!)
         XCTAssertEqual(stored, LLMChoice.none)
-        XCTAssertNil(defaults.string(forKey: "notika.settings.llmChoice"))
+        XCTAssertNil(defaults.string(forKey: "kirjo.settings.llmChoice"))
     }
 
     // MARK: - Codable-Roundtrips für OpenAI / Google

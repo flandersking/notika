@@ -1,7 +1,7 @@
 import SwiftUI
 
 @main
-struct NotikaApp: App {
+struct KirjoApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
 
     var body: some Scene {
@@ -9,7 +9,7 @@ struct NotikaApp: App {
             MenuBarContent()
         } label: {
             Label {
-                Text("Notika")
+                Text("Kirjo")
             } icon: {
                 Image(systemName: "waveform.badge.mic")
             }

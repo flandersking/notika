@@ -11,7 +11,7 @@ public final class WhisperKitEngine: TranscriptionEngine, @unchecked Sendable {
     private let modelID: WhisperModelID
     private let modelStore: WhisperModelStore
     private var whisperKit: WhisperKit?
-    private let logger = Logger(subsystem: "com.notika.mac", category: "Whisper")
+    private let logger = Logger(subsystem: "de.dymny.kirjo.mac", category: "Whisper")
 
     public init(modelID: WhisperModelID, modelStore: WhisperModelStore) {
         self.modelID = modelID

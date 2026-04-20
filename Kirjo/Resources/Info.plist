@@ -32,8 +32,8 @@
 	<key>NSHumanReadableCopyright</key>
 	<string>© 2026 Michael Dymny</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>Notika nimmt Audio auf, um Sprache in Text umzuwandeln.</string>
+	<string>Kirjo nimmt Audio auf, um Sprache in Text umzuwandeln.</string>
 	<key>NSSpeechRecognitionUsageDescription</key>
-	<string>Notika nutzt Apple Speech für on-device Transkription.</string>
+	<string>Kirjo nutzt Apple Speech für on-device Transkription.</string>
 </dict>
 </plist>

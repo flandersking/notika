@@ -1,5 +1,5 @@
 import SwiftUI
-import NotikaMacOS
+import KirjoMacOS
 
 enum OnboardingStep: Int, CaseIterable {
     case welcome
@@ -9,7 +9,7 @@ enum OnboardingStep: Int, CaseIterable {
 
     var title: String {
         switch self {
-        case .welcome:     return "Willkommen bei Notika"
+        case .welcome:     return "Willkommen bei Kirjo"
         case .permissions: return "Berechtigungen erteilen"
         case .llmSetup:    return "KI-Helfer einrichten"
         case .finished:    return "Alles bereit"
@@ -22,7 +22,7 @@ struct OnboardingFlow: View {
 
     @State private var step: OnboardingStep = .welcome
     @State private var checker = PermissionsChecker()
-    @AppStorage("notika.hasCompletedOnboarding") private var hasCompletedOnboarding = false
+    @AppStorage("kirjo.hasCompletedOnboarding") private var hasCompletedOnboarding = false
 
     var body: some View {
         VStack(spacing: 0) {
@@ -68,10 +68,10 @@ private struct WelcomeStep: View {
                 .foregroundStyle(.tint)
 
             VStack(spacing: 10) {
-                Text("Willkommen bei Notika")
+                Text("Willkommen bei Kirjo")
                     .font(.largeTitle)
                     .bold()
-                Text("Sprich — Notika tippt für dich.\nDrei Modi, eigene Hotkeys, volle Kontrolle.")
+                Text("Sprich — Kirjo tippt für dich.\nDrei Modi, eigene Hotkeys, volle Kontrolle.")
                     .multilineTextAlignment(.center)
                     .foregroundStyle(.secondary)
             }

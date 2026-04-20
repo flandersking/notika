@@ -8,7 +8,7 @@ public final class AnthropicEngine: PostProcessingEngine {
     private let model: AnthropicModel
     private let apiKey: String
     private let client: LLMHTTPClient
-    private let logger = Logger(subsystem: "com.notika.mac", category: "PostProcessing.Anthropic")
+    private let logger = Logger(subsystem: "de.dymny.kirjo.mac", category: "PostProcessing.Anthropic")
 
     public init(model: AnthropicModel, apiKey: String, httpClient: LLMHTTPClient = LLMHTTPClient()) {
         self.model = model
