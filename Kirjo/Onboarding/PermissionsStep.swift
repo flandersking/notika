@@ -21,6 +21,25 @@ struct PermissionsStep: View {
 
             ScrollView {
                 VStack(spacing: 14) {
+                    // Reihenfolge: Bedienungshilfen zuerst — ohne diese kann der Hotkey
+                    // nicht ausgelöst werden, und macOS blockiert das erste Diktat.
+                    PermissionCard(
+                        title: "Bedienungshilfen",
+                        description: "Erlaubt Kirjo, den Hotkey (Fn etc.) zu erkennen und Text direkt in die fokussierte App einzufügen.",
+                        icon: "keyboard",
+                        status: checker.accessibility,
+                        primaryAction: .init(
+                            label: checker.accessibility == .notDetermined ? "Zugriff anfragen" : "Systemeinstellungen öffnen",
+                            action: {
+                                if checker.accessibility == .notDetermined {
+                                    checker.requestAccessibilityAccess()
+                                } else {
+                                    checker.openAccessibilitySystemSettings()
+                                }
+                            }
+                        )
+                    )
+
                     PermissionCard(
                         title: "Mikrofon",
                         description: "Damit Kirjo aufnehmen kann, was du sagst.",
@@ -55,21 +74,25 @@ struct PermissionsStep: View {
                         )
                     )
 
-                    PermissionCard(
-                        title: "Bedienungshilfen",
-                        description: "Erlaubt Kirjo, Text direkt in die fokussierte App einzufügen.",
-                        icon: "keyboard",
-                        status: checker.accessibility,
-                        primaryAction: .init(
-                            label: checker.accessibility == .notDetermined ? "Zugriff anfragen" : "Systemeinstellungen öffnen",
-                            action: {
-                                if checker.accessibility == .notDetermined {
-                                    checker.requestAccessibilityAccess()
-                                } else {
-                                    checker.openAccessibilitySystemSettings()
-                                }
-                            }
-                        )
+                    // Hinweis-Card: macOS kann beim ersten Diktat weitere TCC-Dialoge zeigen
+                    // (z.B. "Zugriff auf Dokumente"). Das ist normal — einmal Erlauben, dann Ruhe.
+                    HStack(alignment: .top, spacing: 12) {
+                        Image(systemName: "info.circle.fill")
+                            .foregroundStyle(.tint)
+                            .font(.system(size: 18))
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text("Beim ersten Diktat kann macOS zusätzliche Dialoge zeigen")
+                                .font(.subheadline.bold())
+                            Text("Etwa für Dokumente-Zugriff oder Dateisystem-Zugriff. Bitte jeweils **Erlauben** wählen — sonst bleibt die Transkription hängen, bis du bestätigst.")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                                .fixedSize(horizontal: false, vertical: true)
+                        }
+                    }
+                    .padding(14)
+                    .background(Color.accentColor.opacity(0.08), in: RoundedRectangle(cornerRadius: 10))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 10).stroke(Color.accentColor.opacity(0.25), lineWidth: 1)
                     )
                 }
                 .padding(.horizontal, 32)
@@ -83,7 +106,7 @@ struct PermissionsStep: View {
                     .buttonStyle(.bordered)
                 Spacer()
                 Button(action: onContinue) {
-                    Text(checker.allGranted ? "Weiter" : "Später nachholen")
+                    Text(checker.allGranted ? "Weiter" : "Trotzdem weiter")
                         .frame(minWidth: 140)
                 }
                 .buttonStyle(.borderedProminent)
